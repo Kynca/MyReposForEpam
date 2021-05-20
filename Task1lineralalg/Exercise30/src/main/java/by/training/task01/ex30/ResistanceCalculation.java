@@ -12,13 +12,6 @@ import java.util.Scanner;
  */
 public class ResistanceCalculation {
     static final Logger resLogger =LogManager.getLogger(ResistanceCalculation.class.getName());
-    public static void main(String[] args) {
-        ResistanceCalculation rescalc=new ResistanceCalculation();
-       double result= rescalc.resistanceCalculation(rescalc.resistanceInput(), rescalc.resistanceInput(), rescalc.resistanceInput());
-       resLogger.info("result of calculation - "+result);
-        System.out.println("Connection resistance="+ result);
-    }
-
     /**
      * @param R1 first resistance indicator
      * @param R2 second resistance indicator

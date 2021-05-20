@@ -12,20 +12,6 @@ import java.util.Scanner;
  */
 public class IsInArea {
     static final Logger areaCheckLogger= LogManager.getLogger(IsInArea.class.getName());
-
-    /**
-     * main method where user input x and y and get result of check
-     */
-    public static void main(String[] args) {
-        IsInArea iia=new IsInArea();
-        System.out.println("x= ");
-        int x=iia.numberChecker(Integer.MIN_VALUE,Integer.MAX_VALUE);
-        System.out.println("y= ");
-        int y =iia.numberChecker(Integer.MIN_VALUE,Integer.MAX_VALUE);
-        boolean result=iia.isInArea(x,y);
-        System.out.println("Does x and y in figure? Result: "+result);
-    }
-
     /**
      * const point coordinates in triangle and figure 1
      */

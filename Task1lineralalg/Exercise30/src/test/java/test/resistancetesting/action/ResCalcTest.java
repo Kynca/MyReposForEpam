@@ -46,7 +46,7 @@ public class ResCalcTest {
             dataProvider = "positiveValueOfResistance")
     public void testPositiveValueCalc(double []res,  double c) {
         double actual = resCalc.resistanceCalculation(res[0],res[1],res[2]);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.00001);
     }
 
     @Test(description = "Negative scenary of resistance calculation",

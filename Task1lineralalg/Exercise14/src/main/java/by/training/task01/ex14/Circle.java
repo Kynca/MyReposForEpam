@@ -13,29 +13,16 @@ import java.util.Scanner;
 public class Circle {
 
     static final Logger circleLogger =LogManager.getLogger(Circle.class.getName());
-
-    /**
-     * main method which shows the result of calculating
-     */
-    public static void main(String[] args) {
-        Circle circle = new Circle();
-        double rad= circle.radInput();
-        circleLogger.info("User enter this value for rad="+rad);
-        if(rad<0) System.out.println("Radius cannot be negative");
-        else {
-            double area=circle.circleArea(rad);
-            double circumference= circle.circumference(rad);
-            System.out.println("Area of circle = "+area+" circumference"+circumference);
-        }
-    }
-
     /**
      * circle area calculation function
      * @param rad circle radius
      * @return calculated circle area
      */
     public double circleArea(double rad){
-        if(rad<0)return -1;
+        if(rad<0){
+            circleLogger.error("wrong data negative radius");
+            return -1;
+        }
         double S;
         S=3.14*Math.pow(rad,2);
         circleLogger.info("result of circle area calculation is"+S);
@@ -49,7 +36,10 @@ public class Circle {
      */
 
     public double circumference(double rad) {
-        if(rad<0)return -1;
+        if(rad<0){
+            circleLogger.error("wrong data negative radius");
+            return -1;
+        }
         double P;
         P=2*3.14*rad;
         circleLogger.info("result of circlecircumference is"+P);
@@ -69,6 +59,7 @@ public class Circle {
         while(true){
             if(scan.hasNextDouble()){
                 rad=scan.nextDouble();
+                circleLogger.info("User enter this value for rad="+rad);
                 break;
             }else{
                 System.out.println("Enter number! ");

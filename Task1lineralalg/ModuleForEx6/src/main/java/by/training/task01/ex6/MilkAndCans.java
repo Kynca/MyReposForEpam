@@ -14,20 +14,6 @@ public class MilkAndCans {
     static final Logger milkInCan = LogManager.getLogger(MilkAndCans.class.getName());
 
     /**
-     * It is main method where creates MilkAndCans class, then user input value for small cans and big cans amount
-     * then show the result of calculation
-     */
-    public static void main(String[] args) {
-        MilkAndCans mac=new MilkAndCans();
-        System.out.println("How many small Cans?");
-        int smallCans=mac.canInput(80);
-        System.out.println("How many big Cans?");
-        int bigCans=mac.canInput(80);
-        milkInCan.info("smallcans= "+smallCans+" bigCans="+bigCans);
-        System.out.println(mac.bigCanCalculation(smallCans,bigCans)+" milk in " +bigCans+" bigCans");
-    }
-
-    /**
      * This is constant which store how many liters of milk in small cans
      */
     static final double MILK_AMOUNT=80;

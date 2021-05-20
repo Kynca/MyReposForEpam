@@ -21,5 +21,6 @@
                 additivity="true">
             <AppenderRef ref="TxtFile" />
         </Logger>
+
     </Loggers>
 </Configuration>

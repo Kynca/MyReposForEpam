@@ -15,16 +15,6 @@ public class TimeTransformation {
     static final Logger ttLogger =LogManager.getLogger(TimeTransformation.class.getName());
 
     /**
-     * main method which creates TimeTransformation class and get input,transform and show the result of transformation
-     */
-    public static void main(String[] args) {
-        TimeTransformation tt= new TimeTransformation();
-        String result=tt.timeCalculation(tt.timeInsert());
-        ttLogger.info("Result of transformation is"+result);
-        System.out.println(result);
-    }
-
-    /**
      * Input method which check is entered data is correct
      * @return amount of seconds which user have entered
      */
@@ -59,11 +49,9 @@ public class TimeTransformation {
      * @return String with transformation result
      */
     public String timeCalculation(int time){
-
         if(time<0){
             return "Time cannot be negative";
         }
-
         int hours=time/3600;
         time-=3600*hours;
         int minutes=time/60;

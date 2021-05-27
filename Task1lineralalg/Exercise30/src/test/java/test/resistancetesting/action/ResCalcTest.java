@@ -57,7 +57,8 @@ public class ResCalcTest {
     }
 
     @Test(description = "Zero scenary of resistance calculation",
-            dataProvider = "zeroValueOfResistance")
+            dataProvider = "zeroValueOfResistance",
+    expectedExceptions = {IllegalArgumentException.class})
     public void testZeroValueCalc(double []res,  double c) {
         double actual = resCalc.resistanceCalculation(res[0],res[1],res[2]);
         assertEquals(actual, c);

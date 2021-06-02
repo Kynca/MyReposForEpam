@@ -74,7 +74,7 @@ public class NumberTransformation {
     }
 
     /**
-     * checks with a sequance of rom numerals
+     * checks with a sequеnce of rom numerals
      * @param romNumbers array of char simbols which stores roms numbers for transform
      * @return boolean result of checking right sequence
      */

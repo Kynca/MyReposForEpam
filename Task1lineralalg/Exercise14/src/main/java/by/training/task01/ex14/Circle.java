@@ -13,35 +13,26 @@ import java.util.Scanner;
 public class Circle {
 
     static final Logger circleLogger =LogManager.getLogger(Circle.class.getName());
+
     /**
      * circle area calculation function
      * @param rad circle radius
      * @return calculated circle area
      */
+
     public double circleArea(double rad){
-        if(rad<0){
-            circleLogger.error("wrong data negative radius");
-            return -1;
-        }
         double S;
-        S=3.14*Math.pow(rad,2);
+        S=Math.PI*rad*rad;
         circleLogger.info("result of circle area calculation is"+S);
         return S;
 }
-
     /**
      * circumference calculation function
      * @param rad circle radius
      * @return calculated circumference
      */
-
     public double circumference(double rad) {
-        if(rad<0){
-            circleLogger.error("wrong data negative radius");
-            return -1;
-        }
-        double P;
-        P=2*3.14*rad;
+        double P=2*Math.PI*rad;
         circleLogger.info("result of circlecircumference is"+P);
         return P;
     }
@@ -69,5 +60,4 @@ public class Circle {
         }
         return rad;
     }
-
 }

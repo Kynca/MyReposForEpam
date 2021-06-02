@@ -61,42 +61,42 @@ public class CircleTest {
             dataProvider = "positiveDataForCircleArea")
     public void testPositiveAreaCalc(int rad,  double c) {
         double actual = circ.circleArea(rad);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.0001);
     }
 
     @Test(description = "Positive scenary of the circumference calculation",
             dataProvider = "positiveDataForCircumference")
     public void testPositiveCircumferenceCalc(int rad,  double c) {
         double actual = circ.circumference(rad);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.0001);
     }
 
     @Test(description = "Negative scenary of the area calculation",
             dataProvider = "negativeDataForCircleArea")
     public void testNegativeAreaCalc(int rad,  double c) {
         double actual = circ.circleArea(rad);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.0001);
     }
 
     @Test(description = "Negative scenary of the circumference calculation",
             dataProvider = "negativeDataForCircumference")
     public void testNegativeCircumferenceCalc(int rad,  double c) {
         double actual = circ.circleArea(rad);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.0001);
     }
 
     @Test(description = "Zero scenary of the area calculation",
             dataProvider = "zeroDataForCircleArea")
     public void testZeroAreaCalc(int rad,  double c) {
         double actual = circ.circleArea(rad);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.0001);
     }
 
     @Test(description = "Zero scenary of the circumference calculation",
             dataProvider = "zeroDataForCircumference")
     public void testZeroCircumferenceCalc(int rad,  double c) {
         double actual = circ.circleArea(rad);
-        assertEquals(actual, c);
+        assertEquals(actual, c,0.0001);
     }
 
 }

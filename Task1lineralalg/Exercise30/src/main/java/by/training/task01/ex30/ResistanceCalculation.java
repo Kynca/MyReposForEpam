@@ -13,15 +13,15 @@ import java.util.Scanner;
 public class ResistanceCalculation {
     static final Logger resLogger =LogManager.getLogger(ResistanceCalculation.class.getName());
     /**
-     * @param R1 first resistance indicator
-     * @param R2 second resistance indicator
-     * @param R3 third resistance indicator
+     * @param r1 first resistance indicator
+     * @param r2 second resistance indicator
+     * @param r3 third resistance indicator
      * @return connection resistance result
      */
-   public double resistanceCalculation(double R1,double R2,double R3){
-       if(R1<0||R2<0||R3<0)return -1;
+   public double resistanceCalculation(double r1,double r2,double r3){
+       if(r1<0||r2<0||r3<0)return -1;
        double result;
-       result=R1*R2*R3/(R1*R2+R2*R3+R3*R1);
+       result=r1*r2*r3/(r1*r2+r2*r3+r3*r1);
        return result;
    }
 

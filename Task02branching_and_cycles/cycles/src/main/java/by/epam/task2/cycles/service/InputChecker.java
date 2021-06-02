@@ -10,7 +10,9 @@ import java.util.Scanner;
  */
 
 public class InputChecker {
+
     static final Logger rootLogger= LogManager.getRootLogger();
+
     public int intInput() {
         Scanner scan = new Scanner(System.in);
         while (true) {
@@ -38,8 +40,6 @@ public class InputChecker {
                 result = intInput();
             }
         }
-
-
     }
 
     public double doubleInput(int counter) {

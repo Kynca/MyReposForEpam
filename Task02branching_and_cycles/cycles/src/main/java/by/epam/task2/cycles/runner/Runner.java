@@ -12,7 +12,7 @@ public class Runner {
         System.out.println("result of transformation is "+transformation.romToArab(input.charInput()));
 
         System.out.println("Enter number more than 100");
-        ArithmeticProgression ap= new ArithmeticProgression();
+        ArithmeticProgressionCheck ap= new ArithmeticProgressionCheck();
         System.out.println("Is it arithmetic progression?  "+ap.progressionCheck(input.intInput()));
 
         FunctionCalculation calculation = new FunctionCalculation();

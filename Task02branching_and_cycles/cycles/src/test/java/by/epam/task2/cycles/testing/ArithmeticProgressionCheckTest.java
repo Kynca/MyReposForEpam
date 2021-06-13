@@ -1,12 +1,12 @@
 package by.epam.task2.cycles.testing;
 
-import by.epam.task2.cycles.ArithmeticProgression;
+import by.epam.task2.cycles.ArithmeticProgressionCheck;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
-public class ArithmeticProgressionTest {
-    ArithmeticProgression isProgression= new ArithmeticProgression();
+public class ArithmeticProgressionCheckTest {
+    ArithmeticProgressionCheck isProgression= new ArithmeticProgressionCheck();
 
     @DataProvider(name="is a progression")
     public Object[][] progression(){

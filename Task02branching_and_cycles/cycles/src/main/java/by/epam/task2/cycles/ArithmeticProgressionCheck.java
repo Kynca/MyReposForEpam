@@ -3,7 +3,7 @@ package by.epam.task2.cycles;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ArithmeticProgression {
+public class ArithmeticProgressionCheck {
 
     static final Logger rootLogger= LogManager.getRootLogger();
 

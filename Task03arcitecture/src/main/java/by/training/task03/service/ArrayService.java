@@ -9,6 +9,6 @@ public interface ArrayService {
     void choiceSort(Array array);
     void insertionSort(Array array);
     void shellSort(Array array);
-    void mergeSort(double[] array,int low, int high);
+    void mergeSort(Array array,int low, int high);
     void arrayIni() throws ServiceException;
 }

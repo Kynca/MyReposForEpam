@@ -14,7 +14,7 @@ public class MergeSort implements Command {
         Repository repository=Repository.getInstance();
         Array array=repository.getArray();
 
-        arrayService.mergeSort(array.getArray(),0,array.getLenght()-1);
+        arrayService.mergeSort(array,0,array.getLenght()-1);
         String response=" Array sorted by merge sort"+array.toString();
         return response;
     }

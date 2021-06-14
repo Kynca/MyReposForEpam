@@ -31,6 +31,7 @@ public class View {
                 break;
             default:
                 System.out.println("There is no result like that. That's why language sets on english. Good luck");
+                locale=new Locale("eng","BR");
         }
         rb=ResourceBundle.getBundle("property.text",locale);
         String congratulation=rb.getString("cograts");

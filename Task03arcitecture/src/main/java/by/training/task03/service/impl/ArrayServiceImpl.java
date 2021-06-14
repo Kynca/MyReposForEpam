@@ -114,7 +114,7 @@ public void shellSort(Array array){
     }
 }
 
-public void mergeSort(double array[],int low,int high){
+public void mergeSort(Array array,int low,int high){
     serviceLogger.info("User chose merge sort");
         if (high <= low) return;
         int mid = (low+high)/2;
@@ -123,14 +123,14 @@ public void mergeSort(double array[],int low,int high){
         merge(array, low, mid, high);
 }
 
-    public static void merge(double[] array, int low, int mid, int high) {
+    public static void merge(Array array, int low, int mid, int high) {
         double leftArray[] = new double[mid - low + 1];
         double rightArray[] = new double[high - mid];
         for (int i = 0; i < leftArray.length; i++)
-            leftArray[i] = array[low + i];
+            leftArray[i] = array.getElement(low + i);
 
         for (int i = 0; i < rightArray.length; i++)
-            rightArray[i] = array[mid + i + 1];
+            rightArray[i] = array.getElement(mid + i + 1);
 
         int leftIndex = 0;
         int rightIndex = 0;
@@ -139,19 +139,19 @@ public void mergeSort(double array[],int low,int high){
 
             if (leftIndex < leftArray.length && rightIndex < rightArray.length) {
                 if (leftArray[leftIndex] < rightArray[rightIndex]) {
-                    array[i] = leftArray[leftIndex];
+                    array.setElement(i,leftArray[leftIndex]);
                     leftIndex++;
                 } else {
-                    array[i] = rightArray[rightIndex];
+                    array.setElement(i,rightArray[rightIndex]);
                     rightIndex++;
                 }
             } else if (leftIndex < leftArray.length) {
 
-                array[i] = leftArray[leftIndex];
+                array.setElement(i,leftArray[leftIndex]);
                 leftIndex++;
             } else if (rightIndex < rightArray.length) {
 
-                array[i] = rightArray[rightIndex];
+                array.setElement(i,rightArray[rightIndex]);
                 rightIndex++;
             }
         }

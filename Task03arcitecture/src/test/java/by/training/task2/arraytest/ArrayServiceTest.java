@@ -58,4 +58,10 @@ public class ArrayServiceTest {
         arrayService.shellSort(array1);
         assertEquals(array1,array2);
     }
+
+    @Test(description = "merge sort")
+    public void mergeSortTest(){
+        arrayService.mergeSort(array1,0,array1.getLenght()-1);
+        assertEquals(array1,array2);
+    }
 }

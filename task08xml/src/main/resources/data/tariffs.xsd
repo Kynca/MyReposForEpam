@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.training.by/bean"
+        xmlns:tns="http://www.training.by/bean"
+        elementFormDefault="qualified">
+
+    <element name="tariffs">
+        <complexType>
+            <sequence>
+                <element ref="tns:tariff"
+                         minOccurs="1"
+                         maxOccurs="unbounded"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="tariff" type="tns:Tariff" abstract="true"/>
+    <element name="tariffWithMinutes" type="tns:tariffWithMinutes" substitutionGroup="tns:tariff"/>
+    <element name="tariffWithoutMinutes" type="tns:tariffWithoutMinutes" substitutionGroup="tns:tariff"/>
+
+    <complexType name="Tariff">
+        <sequence>
+            <element name="name" type="ID"/>
+            <element name="operatorName">
+                <simpleType>
+                    <restriction base="string">
+                        <enumeration value="MTS"/>
+                        <enumeration value="Velcome"/>
+                        <enumeration value="A1"/>
+                        <enumeration value="Life"/>
+                        <enumeration value="Beeline"/>
+                        <enumeration value="Tele2"/>
+                    </restriction>
+                </simpleType>
+            </element>
+            <element name="payroll">
+                <simpleType>
+                    <restriction base="double">
+                        <minInclusive value="0"/>
+                    </restriction>
+                </simpleType>
+            </element>
+            <element ref="tns:parameters"/>
+            <element name="appearanceDate" type="date"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="tariffWithMinutes">
+        <complexContent>
+            <extension base="tns:Tariff">
+                <sequence>
+                    <element name="freeWithin" type="string"/>
+                    <element name="freeOut" type="string"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+
+    <complexType name="tariffWithoutMinutes">
+        <complexContent>
+            <extension base="tns:Tariff">
+                <sequence>
+                    <element name="withinNetwork">
+                        <simpleType>
+                            <restriction base="double">
+                                <minInclusive value="0"/>
+                                <maxInclusive value="10"/>
+                            </restriction>
+                        </simpleType>
+                    </element>
+                    <element name="outOfNetwork">
+                        <simpleType>
+                            <restriction base="double">
+                                <minInclusive value="0"/>
+                                <maxInclusive value="10"/>
+                            </restriction>
+                        </simpleType>
+                    </element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <element name="bonuses">
+        <complexType>
+            <sequence>
+                <element name="favorite" minOccurs="0" default="false" type="boolean"/>
+                <element name="subscription" type="string" minOccurs="0" default="no"/>
+                <element name="accumulation" minOccurs="0" default="false" type="boolean"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="parameters">
+        <complexType>
+            <sequence>
+                <element name="freeInternet" type="string"/>
+                <element name="wifiHosting" default="0" type="string"/>
+                <element ref="tns:bonuses" minOccurs="0"/>
+            </sequence>
+        </complexType>
+    </element>
+
+
+</schema>

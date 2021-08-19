@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<tariffs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://www.training.by/bean"
+         xsi:schemaLocation="http://www.training.by/bean  tariffs.xsd">
+
+    <tariffWithoutMinutes>
+        <name>Super10</name>
+        <operatorName>MTS</operatorName>
+        <payroll>21.30</payroll>
+        <parameters>
+            <freeInternet>10gb</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+            <bonuses>
+                <favorite>false</favorite>
+                <subscription>online cinema</subscription>
+                <accumulation></accumulation>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2010-10-01</appearanceDate>
+        <withinNetwork>0.0468</withinNetwork>
+        <outOfNetwork>0.0468</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithMinutes>
+        <name>UnlimitedPlus</name>
+        <operatorName>MTS</operatorName>
+        <payroll>25.48</payroll>
+        <parameters>
+            <freeInternet>unlimited</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+            <bonuses>
+                <favorite>false</favorite>
+                <subscription>online cinema</subscription>
+                <accumulation></accumulation>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2019-12-01</appearanceDate>
+        <freeWithin>500</freeWithin>
+        <freeOut>500</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithMinutes>
+        <name>ComfortM</name>
+        <operatorName>A1</operatorName>
+        <payroll>21.73</payroll>
+        <parameters>
+            <freeInternet>10 gb</freeInternet>
+            <wifiHosting>unlimited</wifiHosting>
+        </parameters>
+        <appearanceDate>2010-09-10</appearanceDate>
+        <freeWithin>unlimited</freeWithin>
+        <freeOut>0</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithMinutes>
+        <name>SmartUnlimited</name>
+        <operatorName>A1</operatorName>
+        <payroll>62.51</payroll>
+        <parameters>
+            <freeInternet>unlimited</freeInternet>
+            <wifiHosting>unlimited</wifiHosting>
+            <bonuses>
+                <favorite>false</favorite>
+                <subscription>online cinema</subscription>
+                <accumulation>false</accumulation>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2020-12-30</appearanceDate>
+        <freeWithin>unlimited</freeWithin>
+        <freeOut>unlimited</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithoutMinutes>
+        <name>Social</name>
+        <operatorName>A1</operatorName>
+        <payroll>1.7</payroll>
+        <parameters>
+            <freeInternet>100 mb</freeInternet>
+            <wifiHosting>0</wifiHosting>
+            <bonuses>
+                <favorite>true</favorite>
+                <accumulation>false</accumulation>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2001-05-01</appearanceDate>
+        <withinNetwork>0.0228</withinNetwork>
+        <outOfNetwork>0.0975</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithMinutes>
+        <name>Play</name>
+        <operatorName>Life</operatorName>
+        <payroll>21.00</payroll>
+        <parameters>
+            <freeInternet>unlimited</freeInternet>
+            <wifiHosting>unlimited</wifiHosting>
+            <bonuses>
+                <subscription>Yandex</subscription>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2015-10-01</appearanceDate>
+        <freeWithin>100</freeWithin>
+        <freeOut>100</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithMinutes>
+        <name>Absolut</name>
+        <operatorName>MTS</operatorName>
+        <payroll>149.19</payroll>
+        <parameters>
+            <freeInternet>unlimited</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+        </parameters>
+        <appearanceDate>2019-12-01</appearanceDate>
+        <freeWithin>unlimited</freeWithin>
+        <freeOut>unlimited</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithoutMinutes>
+        <name>From2003</name>
+        <operatorName>Velcome</operatorName>
+        <payroll>3000</payroll>
+        <parameters>
+            <freeInternet>0</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+            <bonuses>
+                <favorite>true</favorite>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2003-10-01</appearanceDate>
+        <withinNetwork>1.5</withinNetwork>
+        <outOfNetwork>3</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithMinutes>
+        <name>BusinessClass</name>
+        <operatorName>A1</operatorName>
+        <payroll>125.17</payroll>
+        <parameters>
+            <freeInternet>unlimited</freeInternet>
+            <wifiHosting>unlimited</wifiHosting>
+            <bonuses>
+                <subscription>Voka</subscription>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2021-01-01</appearanceDate>
+        <freeWithin>unlimited</freeWithin>
+        <freeOut>unlimited</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithoutMinutes>
+        <name>Child</name>
+        <operatorName>Life</operatorName>
+        <payroll>1</payroll>
+        <parameters>
+            <freeInternet>50 mb</freeInternet>
+            <wifiHosting>0</wifiHosting>
+            <bonuses>
+                <favorite>true</favorite>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2005-10-01</appearanceDate>
+        <withinNetwork>0.0468</withinNetwork>
+        <outOfNetwork>0.0468</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithoutMinutes>
+        <name>Stoo</name>
+        <operatorName>Life</operatorName>
+        <payroll>13</payroll>
+        <parameters>
+            <freeInternet>100mb</freeInternet>
+            <wifiHosting>0</wifiHosting>
+        </parameters>
+        <appearanceDate>2007-10-01</appearanceDate>
+        <withinNetwork>0</withinNetwork>
+        <outOfNetwork>0.15</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithMinutes>
+        <name>Maximum</name>
+        <operatorName>Beeline</operatorName>
+        <payroll>68.77</payroll>
+        <parameters>
+            <freeInternet>0</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+            <bonuses>
+                <subscription>online cinema</subscription>
+                <accumulation>false</accumulation>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2021-10-01</appearanceDate>
+        <freeWithin>unlimited</freeWithin>
+        <freeOut>unlimited</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithoutMinutes>
+        <name>MyOnline</name>
+        <operatorName>Tele2</operatorName>
+        <payroll>18.91</payroll>
+        <parameters>
+            <freeInternet>30 gb</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+        </parameters>
+        <appearanceDate>2019-10-06</appearanceDate>
+        <withinNetwork>0</withinNetwork>
+        <outOfNetwork>0.03</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithoutMinutes>
+        <name>EasySaying</name>
+        <operatorName>MTS</operatorName>
+        <payroll>0.66</payroll>
+        <parameters>
+            <freeInternet>50 mb</freeInternet>
+            <wifiHosting>0</wifiHosting>
+        </parameters>
+        <appearanceDate>2010-10-01</appearanceDate>
+        <withinNetwork>0.0468</withinNetwork>
+        <outOfNetwork>0.0468</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithoutMinutes>
+        <name>Shake</name>
+        <operatorName>Life</operatorName>
+        <payroll>14.90</payroll>
+        <parameters>
+            <freeInternet>10 gb</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+            <bonuses>
+                <favorite>true</favorite>
+                <subscription>Bip</subscription>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2011-10-21</appearanceDate>
+        <withinNetwork>0</withinNetwork>
+        <outOfNetwork>0.0368</outOfNetwork>
+    </tariffWithoutMinutes>
+
+    <tariffWithMinutes>
+        <name>Ultra</name>
+        <operatorName>MTS</operatorName>
+        <payroll>55.09</payroll>
+        <parameters>
+            <freeInternet>unlimited</freeInternet>
+            <wifiHosting>100 mb/day</wifiHosting>
+        </parameters>
+        <appearanceDate>2007-10-01</appearanceDate>
+        <freeWithin>500</freeWithin>
+        <freeOut>500</freeOut>
+    </tariffWithMinutes>
+
+    <tariffWithoutMinutes>
+        <name>MyTariff</name>
+        <operatorName>A1</operatorName>
+        <payroll>18.30</payroll>
+        <parameters>
+            <freeInternet>25 gb</freeInternet>
+            <wifiHosting>unlimited</wifiHosting>
+            <bonuses>
+                <favorite>true</favorite>
+                <subscription>Telegram</subscription>
+                <accumulation>true</accumulation>
+            </bonuses>
+        </parameters>
+        <appearanceDate>2001-06-06</appearanceDate>
+        <withinNetwork>0.0028</withinNetwork>
+        <outOfNetwork>0.0068</outOfNetwork>
+    </tariffWithoutMinutes>
+
+</tariffs>

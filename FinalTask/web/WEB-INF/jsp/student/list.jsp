@@ -32,7 +32,6 @@
         </tr>
         </c:forEach>
     </table>
-
     <c:url value="/student/process.html" var="process"/>
 
     <form action="${process}" method="post">
@@ -44,4 +43,8 @@
         <input type="submit">
     </form>
 
+    <c:if test="${user.role.value eq 2}">
+        <c:url value="create.jsp" var="create"/>
+        <a href="${create}"/>
+    </c:if>
 </tag:html>

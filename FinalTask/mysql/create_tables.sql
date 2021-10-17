@@ -90,7 +90,7 @@ CREATE TABLE document
     receiver_mail VARCHAR(322),
     CONSTRAINT PK_document PRIMARY KEY (id),
     CONSTRAINT FK_documentClient FOREIGN KEY (student_id)
-        REFERENCES student (user_id) ON DELETE RESTRICT,
+        REFERENCES student (user_id) ON DELETE CASCADE ,
     CONSTRAINT FK_documentDocument_type FOREIGN KEY (type_id)
         REFERENCES document_type (id)
 

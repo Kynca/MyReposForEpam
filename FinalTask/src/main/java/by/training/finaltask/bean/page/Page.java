@@ -6,19 +6,15 @@ public enum Page {
     LOGIN_FORM("/loginForm.html"),
     PROFILE_JSP("/profile.jsp"),
     PROFILE_HTML("/profile.html"),
-    MARK_LIST("/stud/markList.jsp"),
-    DOC_LIST("/stud/documentList.jsp"),
-    DOC_LIST_HTML("/stud/documentList.html"),
-    DOC_ORDER_JSP("/stud/documentOrder.jsp"),
-    DOC_ORDER_HTML("/stud/documentOrder.html"),
     INDEX("/index.jsp"),
     INDEX_HTML("/.html"),
 
-    STUDENT_LIST("/student/list.jsp"),
+    ADMIN_STUDENT_LIST("/student/list.jsp"),
     STUDENT_LIST_HTML("/student/list.html"),
     STUDENT_EDIT_JSP("/student/edit.jsp"),
     STUDENT_EDIT_HTML("/student/edit.html"),
     STUDENT_FIND("/student/find.html"),
+    STUDENT_CREATE("/student/create.jsp"),
 
     USER_FIND("/user/find.html"),
     USER_LIST_HTML("/user/list.html"),
@@ -34,8 +30,16 @@ public enum Page {
     DEAN_FIND("/dean/find.html"),
     DEAN_CREATE_HTML("/dean/create.html"),
     DEAN_CREATE_JSP("/dean/create.jsp"),
-    DEAN_FIND_UNIVERSITY("/dean/find/uni.html")
+    DEAN_FIND_UNIVERSITY("/dean/find/uni.html"),
 
+    DOCUMENT_DEAN_LIST("/document/deanList.jsp"),
+    DOCUMENT_DEAN_LIST_HTML("/document/dean/list.html"),
+    DOCUMENT_LIST("/document/studList.jsp"),
+    DOCUMENT_LIST_HTML("/document/stud/list.html"),
+    DOCUMENT_ORDER_JSP("/document/order.jsp"),
+    DOCUMENT_ORDER_HTML("/document/order.html"),
+
+    MARK_LIST("/mark/list.jsp")
     ;
 
     private String value;

@@ -2,7 +2,10 @@ package by.training.finaltask.service.impl;
 
 import by.training.finaltask.bean.entities.Document;
 import by.training.finaltask.dao.DaoFactory;
+import by.training.finaltask.dao.DeanDao;
+import by.training.finaltask.dao.daoimpl.DeanDaoImpl;
 import by.training.finaltask.dao.daoimpl.DocumentDaoImpl;
+import by.training.finaltask.dao.daoimpl.StudentDaoImpl;
 import by.training.finaltask.dao.exception.DaoException;
 import by.training.finaltask.service.BaseService;
 import by.training.finaltask.service.DocumentService;
@@ -11,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DocumentServiceImpl extends BaseService implements DocumentService {
@@ -38,16 +40,19 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
 
     @Override
     public List<Document> viewDocuments(Integer id, boolean isDean) throws ServiceException {
-        debugLog.debug("in service");
+        debugLog.debug("in service" + isDean);
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(documentDao);
         debugLog.debug("init Transaction");
         List<Document> documents = null;
         try {
-            if (id == null) {
-                documents = documentDao.findAll();
-            } else if (id > 0) {
-                documents = documentDao.findByNotDocId(id, isDean);
+            if (id != null) {
+                if (isDean) {
+                    debugLog.debug("in find id");
+                    documents = documentDao.findByDeanId(id);
+                } else {
+                    documents = documentDao.findByUserId(id);
+                }
             }
             return documents;
         } catch (DaoException e) {
@@ -59,14 +64,18 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
 
     @Override
     public boolean addFile(String filepath, Integer id) throws ServiceException {
+        debugLog.debug("in add file service" + id + filepath);
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(documentDao);
         try {
             Document document = documentDao.findById(id);
+            debugLog.debug("doc founded" + document);
             if (document != null && !filepath.isEmpty()) {
+                debugLog.debug("setting path");
                 document.setDocumentPath(filepath);
                 return documentDao.update(document);
             } else {
+                transaction.rollback();
                 return false;
             }
         } catch (DaoException e) {
@@ -92,15 +101,15 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
 
     @Override
     public boolean createDocument(Document document) throws ServiceException {
-        debugLog.debug("in service");
+        debugLog.debug("in service" + document);
         if (document != null && document.getDeliveryType() != null && document.getTypeId() != null) {
-            if (document.getReceiverMail() != null) {
+            if (document.getReceiverMail() != null && !document.getReceiverMail().isEmpty()) {
                 Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:.[a-zA-Z0-9_+&*-]" +
                         "+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}");
                 debugLog.debug(document.getReceiverMail());
                 boolean result = pattern.matcher(document.getReceiverMail()).matches();
                 debugLog.debug(result);
-                if(!result){
+                if (!result) {
                     debugLog.debug("mail don't match");
                     return false;
                 }

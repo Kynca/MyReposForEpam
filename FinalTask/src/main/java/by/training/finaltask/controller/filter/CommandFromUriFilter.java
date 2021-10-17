@@ -2,15 +2,10 @@ package by.training.finaltask.controller.filter;
 
 import by.training.finaltask.controller.Command;
 import by.training.finaltask.controller.commands.*;
-import by.training.finaltask.controller.commands.documents.AddDocument;
-import by.training.finaltask.controller.commands.documents.ViewDocTypes;
+import by.training.finaltask.controller.commands.document.*;
 import by.training.finaltask.controller.commands.marks.ViewListOfMarks;
 import by.training.finaltask.controller.commands.dean.*;
-import by.training.finaltask.controller.commands.documents.ViewDocList;
-import by.training.finaltask.controller.commands.student.EditStudent;
-import by.training.finaltask.controller.commands.student.FindStudent;
-import by.training.finaltask.controller.commands.student.ProcessStudent;
-import by.training.finaltask.controller.commands.student.ViewStudentList;
+import by.training.finaltask.controller.commands.student.*;
 import by.training.finaltask.controller.commands.user.EditUser;
 import by.training.finaltask.controller.commands.user.FindUser;
 import by.training.finaltask.controller.commands.user.ProcessUser;
@@ -42,15 +37,13 @@ public class CommandFromUriFilter implements Filter {
         repository.put("/profile", new ProfileDefiner());
         repository.put("/viewDeanInfo",new ViewDeanInfo());
 
-        repository.put("/stud/markList", new ViewListOfMarks());
-        repository.put("/stud/documentList", new ViewDocList());
-        repository.put("/stud/documentOrder",new ViewDocTypes());
-        repository.put("/stud/documentOrder/add", new AddDocument());
+        repository.put("/mark/list", new ViewListOfMarks());
 
         repository.put("/student/list", new ViewStudentList());
         repository.put("/student/process", new ProcessStudent());
         repository.put("/student/find", new FindStudent());
         repository.put("/student/edit", new EditStudent());
+        repository.put("/student/create", new CreateStudent());
 
         repository.put("/user/list", new ViewUsers());
         repository.put("/user/process", new ProcessUser());
@@ -63,6 +56,12 @@ public class CommandFromUriFilter implements Filter {
         repository.put("/dean/edit", new EditDean());
         repository.put("/dean/find/uni", new FindUniversities());
         repository.put("/dean/create", new CreateDean());
+
+        repository.put("/document/dean/list", new ViewDeanDocuments());
+        repository.put("/document/stud/list", new ViewStudentDocuments());
+        repository.put("/document/edit" , new EditDocument());
+        repository.put("/document/order",new ViewDocTypes());
+        repository.put("/document/order/add", new AddDocument());
 
     }
 

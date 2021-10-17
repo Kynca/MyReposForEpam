@@ -25,6 +25,15 @@ public class Student extends Entity{
         this.deanId = deanId;
     }
 
+    public Student( String name, String lastname, String patronymic, String date, String mail, Integer deanId){
+        this.name = name;
+        this.lastname = lastname;
+        this.patronymic = patronymic;
+        this.date = date;
+        this.mail = mail;
+        this.deanId = deanId;
+    }
+
     public String getName() {
         return name;
     }

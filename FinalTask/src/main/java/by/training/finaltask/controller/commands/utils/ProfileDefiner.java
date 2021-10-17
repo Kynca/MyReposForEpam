@@ -27,7 +27,6 @@ public class ProfileDefiner implements AdminCommand, StudentCommand, DeanCommand
             case ADMINISTRATOR:
                 result = new Result(Page.PROFILE_JSP, false);
                 break;
-
             default:
                 result = new Result(Page.LOGIN_FORM, true);
                 break;

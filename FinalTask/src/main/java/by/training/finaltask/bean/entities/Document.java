@@ -39,23 +39,14 @@ public class Document extends Entity {
 
     public Document(String orderDate, Integer typeId, boolean deliveryType, String receiverName, String receiverMail,
                     String comment, Integer studentId) {
-        debugLog.debug("in bean");
         this.orderDate = orderDate;
-        debugLog.debug("date");
         this.typeId = typeId;
-        debugLog.debug("type");
         this.deliveryType = deliveryType;
-        debugLog.debug("delivery");
         status = false;
-        debugLog.debug("status");
         this.receiverName = receiverName;
-        debugLog.debug("name");
         this.receiverMail = receiverMail;
-        debugLog.debug("in mail");
         this.comment = comment;
-        debugLog.debug("in comment");
         this.studentId = studentId;
-        debugLog.debug("id");
     }
 
     public String getOrderDate() {

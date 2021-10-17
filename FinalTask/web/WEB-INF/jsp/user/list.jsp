@@ -7,21 +7,24 @@
 <tag:html title="User list">
     <tag:menu/>
     <h2><fmt:message key="userList"/></h2>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th><fmt:message key="id"/></th>
-            <th><fmt:message key="name"/></th>
-            <th><fmt:message key="role"/></th>
-        </tr>
-        <c:forEach items="${users}" var="item">
-        <tr>
-            <th>${item.id}</th>
-            <th>${item.login}</th>
-            <th>${item.role.value}</th>
-        </tr>
-        </c:forEach>
-    </table>
+
+
+            <table class="table table-bordered" id="table_id">
+                <thead>
+                <tr>
+                    <th><fmt:message key="id"/></th>
+                    <th><fmt:message key="name"/></th>
+                    <th><fmt:message key="role"/></th>
+                </tr>
+                </thead>
+    <c:forEach items="${users}" var="item">
+                <tr>
+                    <th>${item.id}</th>
+                    <th>${item.login}</th>
+                    <th>${item.role.value}</th>
+                </tr>
+    </c:forEach>
+            </table>
 
     <c:url value="/user/process.html" var="process"/>
 

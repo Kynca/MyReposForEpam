@@ -17,8 +17,10 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
 
     private static final String SELECT = "SELECT user_id, name, lastname, patronymic, birthdate, mail, dean_id " +
             "FROM student INNER JOIN program_user u ON student.user_id = u.id WHERE dean_id IS NOT NULL AND role NOT LIKE 0 ORDER BY user_id";
-    private static final String SELECT_BY_ID = "SELECT name, lastname, patronymic, birthdate, mail, dean_id " +
+    private static final String SELECT_BY_ID = "SELECT user_id, name, lastname, patronymic, birthdate, mail, dean_id " +
             "FROM student WHERE user_id = ?";
+    private static final String SELECT_BY_DEAN = "SELECT user_id, name, lastname, patronymic, birthdate, mail, dean_id " +
+            "FROM student WHERE dean_id = ?";
     private static final String DELETE = "DELETE FROM student WHERE user_id LIKE ?";
     private static final String CREATE = "INSERT INTO student(user_id, name, lastname, patronymic, birthdate, mail, dean_id)" +
             "VALUES (?,?,?,?,?,?,?)";
@@ -35,15 +37,7 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
             ResultSet resultSet = statement.executeQuery(SELECT);
             debugLog.debug("created result set");
             while (resultSet.next()) {
-                Student student = new Student();
-                student.setId(resultSet.getInt("user_id"));
-                student.setName(resultSet.getString("name"));
-                student.setLastname(resultSet.getString("lastname"));
-                student.setPatronymic(resultSet.getString("patronymic"));
-                student.setDate(String.valueOf(resultSet.getDate("birthdate")));
-                student.setMail(resultSet.getString("mail"));
-                student.setDeanId(resultSet.getInt("dean_id"));
-                students.add(student);
+                students.add(setStudent(resultSet));
             }
             return students;
         } catch (SQLException e) {
@@ -55,26 +49,21 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
     @Override
     public Student findById(Integer id) throws DaoException {
         PreparedStatement statement;
+        debugLog.debug(id);
         try {
             statement = connection.prepareStatement(SELECT_BY_ID);
             debugLog.debug("prepared statement");
             statement.setInt(1, id);
+            debugLog.debug("seted id");
             Student student = null;
             ResultSet resultSet = statement.executeQuery();
             debugLog.debug("prepared result set");
             if (resultSet.next()) {
-                student = new Student();
-                student.setId(id);
-                student.setName(resultSet.getString("name"));
-                student.setLastname(resultSet.getString("lastname"));
-                student.setPatronymic(resultSet.getString("patronymic"));
-                student.setDate(String.valueOf(resultSet.getDate("birthdate")));
-                student.setMail(resultSet.getString("mail"));
-                student.setDeanId(resultSet.getInt("dean_id"));
+                student = setStudent(resultSet);
             }
             return student;
         } catch (SQLException e) {
-            debugLog.debug("cannot find user");
+            debugLog.debug("cannot find user" + e);
             throw new DaoException(e);
         }
     }
@@ -136,5 +125,33 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
         } catch (SQLException e) {
             throw new DaoException(e);
         }
+    }
+
+    @Override
+    public List<Student> findDeanStudent(Integer deanId) throws DaoException {
+        PreparedStatement statement;
+        try {
+            statement = connection.prepareStatement(SELECT_BY_DEAN);
+            ResultSet resultSet = statement.executeQuery();
+            List<Student> students = new ArrayList<>();
+            while (resultSet.next()) {
+                setStudent(resultSet);
+            }
+            return students;
+        } catch (SQLException throwables) {
+            throw new DaoException(throwables);
+        }
+    }
+
+    private Student setStudent(ResultSet resultSet) throws SQLException {
+        Student student = new Student();
+        student.setId(resultSet.getInt("user_id"));
+        student.setName(resultSet.getString("name"));
+        student.setLastname(resultSet.getString("lastname"));
+        student.setPatronymic(resultSet.getString("patronymic"));
+        student.setDate(String.valueOf(resultSet.getDate("birthdate")));
+        student.setMail(resultSet.getString("mail"));
+        student.setDeanId(resultSet.getInt("dean_id"));
+        return student;
     }
 }

@@ -14,13 +14,15 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
 
     private static final Logger debugLog = LogManager.getLogger("DebugLog");
 
-    private static final String SELECT = "SELECT document.id, order_date, dt.type, status, delivery_type, comment, document, student_id, receiver_name, receiver_mail " +
+    private static final String SELECT = "SELECT document.id, order_date, type_id, status, delivery_type, comment, document.document, student_id, receiver_name, receiver_mail, type " +
             " FROM document INNER JOIN document_type dt on document.type_id = dt.id";
+    private static final String SELECT_FOR_UPDATE = "SELECT id, document FROM document WHERE id = ?";
     private static final String CREATE = "INSERT INTO document(order_date, type_id, status, delivery_type, comment, student_id, receiver_name, receiver_mail) VALUES (?,?,?,?,?,?,?,?)";
     private static final String DELETE = "DELETE FROM document WHERE id = ?";
-    private static final String UPDATE = "UPDATE document SET document = ? WHERE id = ?";
-    private static final String SELECT_BY_DEAN = "SELECT document.id, order_date, dt.type, status, delivery_type, comment, document, student_id, receiver_name, receiver_mail" +
-            " FROM  document INNER JOIN student s ON document.student_id = s.user_id JOIN document_type dt on document.type_id = dt.id  WHERE dean_id = ?";
+    private static final String UPDATE = "UPDATE document SET document = ?, status = true WHERE id = ?";
+    private static final String SELECT_BY_DEAN = "SELECT document.id, order_date, type, status, delivery_type,type_id, comment, document.document, student_id, receiver_name, receiver_mail" +
+            " FROM  document INNER JOIN student s ON document.student_id = s.user_id JOIN document_type dt on document.type_id = dt.id" +
+            "  WHERE dean_id = ? AND status = false ORDER BY order_date";
     private static final String SELECT_BY_USER = SELECT + " WHERE student_id = ?";
     private static final String SELECT_TYPES = "SELECT id, type FROM document_type";
     private static final String UPDATE_STUD = "UPDATE document SET student_id = NULL WHERE student_id = ?";
@@ -52,35 +54,29 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
     }
 
 
-
     @Override
     public Document findById(Integer id) throws DaoException {
-        Statement statement = null;
+        PreparedStatement statement;
         try {
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SELECT + " WHERE id =" + id);
+            statement = connection.prepareStatement(SELECT_FOR_UPDATE);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                String orderDate = resultSet.getString("order_date");
-                String type = resultSet.getString("dt.type");
-                boolean status = resultSet.getBoolean("status");
-                boolean deliveryType = resultSet.getBoolean("delivery_type");
-                String comment = resultSet.getString("comment");
-                Integer studentId = resultSet.getInt("student_id");
-                String receiverName = resultSet.getString("receiver_name");
-                String receiverMail = resultSet.getString("receiver_mail");
-//              TODO  document.setDocumentType(resultSet.getString("document_type"));
-                Document document = new Document(id, orderDate, type, status, deliveryType, receiverName, receiverMail, comment, studentId);
+                Document document = new Document();
+                document.setId(resultSet.getInt("id"));
+                document.setDocumentPath(resultSet.getString("document"));
                 return document;
             }
             return null;
         } catch (SQLException e) {
+            debugLog.debug(e);
             throw new DaoException(e);
         }
     }
 
     @Override
     public boolean delete(Integer id) throws DaoException {
-        PreparedStatement statement = null;
+        PreparedStatement statement;
         try {
             statement = connection.prepareStatement(DELETE);
             statement.setInt(1, id);
@@ -119,34 +115,41 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
             statement.setInt(2, document.getId());
             return statement.executeUpdate() > 0;
         } catch (SQLException throwables) {
+            debugLog.debug(throwables);
             throw new DaoException(throwables);
         }
     }
 
     @Override
-    public List<Document> findByNotDocId(Integer id, boolean isDean) throws DaoException {
+    public List<Document> findByUserId(Integer id) throws DaoException {
         List<Document> documents = new ArrayList<>();
+        PreparedStatement statement;
         try {
-            PreparedStatement statement;
-            if(isDean) {
-                 statement = connection.prepareStatement(SELECT_BY_DEAN);
-            }else {
-                statement = connection.prepareStatement(SELECT_BY_USER);
-            }
+            statement = connection.prepareStatement(SELECT_BY_USER);
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Integer docId = rs.getInt("id");
-                String orderDate = String.valueOf(rs.getDate("order_date"));
-                String type = rs.getString("dt.type");
-                boolean status = rs.getBoolean("status");
-                boolean deliveryType = rs.getBoolean("delivery_type");
-                String comment = rs.getString("comment");
-                Integer studentId = rs.getInt("student_id");
-                String receiverName = rs.getString("receiver_name");
-                String receiverMail = rs.getString("receiver_mail");
-                Document document = new Document(docId, orderDate, type, status, deliveryType, receiverName, receiverMail, comment, studentId);
-                documents.add(document);
+                documents.add(setDoc(rs, false));
+            }
+            return documents;
+        } catch (SQLException throwables) {
+            throw new DaoException(throwables);
+        }
+    }
+
+    @Override
+    public List<Document> findByDeanId(Integer id) throws DaoException {
+        debugLog.debug("in find dean " + id);
+        List<Document> documents = new ArrayList<>();
+        PreparedStatement statement;
+        try {
+            statement = connection.prepareStatement(SELECT_BY_DEAN);
+            debugLog.debug("created statement");
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            debugLog.debug("created result set");
+            while (resultSet.next()) {
+                documents.add(setDoc(resultSet, true));
             }
             return documents;
         } catch (SQLException throwables) {
@@ -160,14 +163,14 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
         try {
             PreparedStatement statement = connection.prepareStatement(SELECT_TYPES);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Document document = new Document();
                 document.setTypeId(resultSet.getInt("id"));
                 document.setDocumentType(resultSet.getString("type"));
                 documents.add(document);
             }
         } catch (SQLException throwables) {
-           throw  new DaoException(throwables);
+            throw new DaoException(throwables);
         }
         return documents;
     }
@@ -175,7 +178,7 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
     @Override
     public boolean deleteUserReferences(Integer id) throws DaoException {
         PreparedStatement statement;
-        try{
+        try {
             statement = connection.prepareStatement(UPDATE_STUD);
             statement.setInt(1, id);
             debugLog.debug("deleting references" + statement);
@@ -183,7 +186,27 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
             debugLog.debug(rows);
             return rows > 0;
         } catch (SQLException throwables) {
-            throw  new DaoException(throwables);
+            throw new DaoException(throwables);
         }
+    }
+
+    private Document setDoc(ResultSet resultSet, boolean isDean) throws SQLException {
+        debugLog.debug("in set doc");
+        Document document = new Document();
+        if (isDean) {
+            document.setId(resultSet.getInt("document.id"));
+        }
+        document.setOrderDate(resultSet.getString("order_date"));
+        document.setDocumentType(resultSet.getString("dt.type"));
+        document.setStatus(resultSet.getBoolean("status"));
+        document.setDeliveryType(resultSet.getBoolean("delivery_type"));
+        document.setComment(resultSet.getString("comment"));
+        document.setReceiverName(resultSet.getString("receiver_name"));
+        document.setReceiverMail(resultSet.getString("receiver_mail"));
+        document.setStudentId(resultSet.getInt("student_id"));
+        document.setTypeId(resultSet.getInt("type_id"));
+        document.setDocumentPath(resultSet.getString("document.document"));
+        debugLog.debug("filled doc " + document);
+        return document;
     }
 }

@@ -31,6 +31,7 @@ public class ViewDeanInfo implements StudentCommand, DeanCommand {
         request.getSession().removeAttribute("student");
         debugLog.debug("get student =" + student);
         Integer id = student.getDeanId();
+        request.getSession(false).setAttribute("deanId", id);
         try {
             DeanService deanService = ServiceFactory.getInstance().getDeanService();
             Dean dean = deanService.findDean(id);

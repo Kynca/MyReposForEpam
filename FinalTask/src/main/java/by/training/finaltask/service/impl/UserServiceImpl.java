@@ -95,7 +95,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             if(user == null || user.getRole() == Role.ADMINISTRATOR){
                 return false;
             }
-            List<Document> documents = documentDao.findByNotDocId(id, false);
+            List<Document> documents = documentDao.findByUserId(id);
             if (documents.size() > 0) {
                 for (Document document : documents) {
                     if (!documentDao.deleteUserReferences(id)) {

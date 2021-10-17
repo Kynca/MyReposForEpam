@@ -32,7 +32,8 @@ http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1"
         <filter-name>SecurityFilter</filter-name>
         <url-pattern>*.html</url-pattern>
     </filter-mapping>
-        <session-config>
-            <session-timeout>2</session-timeout>
-        </session-config>
+    <session-config>
+        <session-timeout>2</session-timeout>
+    </session-config>
+
 </web-app>

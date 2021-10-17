@@ -4,11 +4,10 @@ import by.training.finaltask.bean.entities.Dean;
 import by.training.finaltask.bean.entities.Document;
 import by.training.finaltask.bean.entities.Student;
 import by.training.finaltask.dao.DaoFactory;
-import by.training.finaltask.dao.DeanDao;
-import by.training.finaltask.dao.StudentDao;
 import by.training.finaltask.dao.daoimpl.DeanDaoImpl;
 import by.training.finaltask.dao.daoimpl.DocumentDaoImpl;
 import by.training.finaltask.dao.daoimpl.StudentDaoImpl;
+import by.training.finaltask.dao.daoimpl.UserDaoImpl;
 import by.training.finaltask.dao.exception.DaoException;
 import by.training.finaltask.service.BaseService;
 import by.training.finaltask.service.StudentService;
@@ -16,10 +15,11 @@ import by.training.finaltask.service.excpetion.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 public class StudentServiceImpl extends BaseService implements StudentService {
 
@@ -29,6 +29,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public Student viewInfo(Integer id) throws ServiceException {
         StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
         transaction.init(studentDao);
+        debugLog.debug("in find");
         try {
             return studentDao.findById(id);
         } catch (DaoException e) {
@@ -58,11 +59,11 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     }
 
     @Override
-    public List<Student> viewStudents() throws ServiceException {
+    public List<Student> viewDeanStudents(Integer id) throws ServiceException {
         StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
         transaction.init(studentDao);
         try {
-            return studentDao.findAll();
+            return studentDao.findDeanStudent(id);
         } catch (DaoException e) {
             throw new ServiceException(e);
         } finally {
@@ -93,10 +94,25 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public boolean createStudent(Student student) throws ServiceException {
         if (student != null) {
             StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
-            transaction.init(studentDao);
+            UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
+            transaction.init(studentDao, userDao);
             try {
-                return studentDao.create(student);
+                if (studentCheck(student)) {
+                    Integer id = userDao.createGeneratedUser(student.getName(), student.getLastname());
+                    if (id == null) {
+                        transaction.rollback();
+                        return false;
+                    }
+                    if (studentDao.create(student)) {
+                        return true;
+                    } else {
+                        transaction.rollback();
+                        return false;
+                    }
+                }
+                return false;
             } catch (DaoException e) {
+                transaction.rollback();
                 throw new ServiceException(e);
             } finally {
                 transaction.endTransaction();
@@ -114,7 +130,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             transaction.init(studentDao, documentDao);
             try {
                 if (studentDao.findById(id) != null) {
-                    List<Document> documents = documentDao.findByNotDocId(id, false);
+                    List<Document> documents = documentDao.findByUserId(id);
                     if (documents.size() > 0) {
                         for (Document document : documents) {
                             if (!documentDao.deleteUserReferences(id)) {
@@ -136,5 +152,23 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             }
         }
         return false;
+    }
+
+    private boolean studentCheck(Student student) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:.[a-zA-Z0-9_+&*-]" +
+                "+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}");
+        if (!pattern.matcher(student.getMail()).matches()) {
+            return false;
+        }
+        if (student.getName() == null || student.getDeanId() == null || student.getDate() == null ||
+                student.getLastname() == null || student.getPatronymic() == null) {
+            return false;
+        }
+
+        pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+        if (!pattern.matcher(student.getDate()).matches()) {
+            return false;
+        }
+        return true;
     }
 }

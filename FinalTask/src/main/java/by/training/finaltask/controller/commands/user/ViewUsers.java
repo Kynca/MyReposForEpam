@@ -30,7 +30,7 @@ public class ViewUsers implements AdminCommand {
             result = new Result(Page.USER_LIST_JSP,false);
         } catch (ServiceException e) {
             debugLog.debug(e + e.getMessage());
-            result = new Result(Page.ERROR, false);
+            result = new Result(Page.ERROR, true);
         }
         return result;
     }

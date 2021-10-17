@@ -6,7 +6,8 @@ import by.training.finaltask.dao.exception.DaoException;
 import java.util.List;
 
 public interface DocumentDao extends Dao< Integer,Document> {
-    List<Document> findByNotDocId(Integer id, boolean isDean) throws DaoException;
+    List<Document> findByUserId(Integer id) throws DaoException;
+    List<Document> findByDeanId(Integer id) throws DaoException;
     List<Document> getTypes() throws DaoException;
     boolean deleteUserReferences(Integer id) throws DaoException;
 }

@@ -32,9 +32,11 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
             User user = (User) request.getSession(false).getAttribute("authorizedUser");
+            debugLog.debug(user);
             switch (user.getRole()) {
                 case ADMINISTRATOR:
                     id = (Integer) request.getSession(false).getAttribute("id");
+                    debugLog.debug("id" + id);
                     result = new Result(Page.STUDENT_EDIT_JSP, false);
                     Student student = studentService.viewInfo(id);
                     debugLog.debug("student founded and =" + student);
@@ -45,10 +47,15 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
                     id = user.getId();
                     student = studentService.viewInfo(id);
                     debugLog.debug("student founded and =" + student);
+                    if (student == null) {
+                        if (user.getRole() == Role.STUDENT) {
+                            return new Result(Page.LOGIN_FORM, true);
+                        }
+                    }
                     request.getSession(false).setAttribute("student", student);
                     break;
                 default:
-                   return new Result(Page.LOGIN_FORM, true);
+                    return new Result(Page.LOGIN_FORM, true);
             }
         } catch (ServiceException e) {
             result = new Result(Page.STUDENT_LIST_HTML, true);

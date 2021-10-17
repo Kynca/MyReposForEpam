@@ -31,21 +31,22 @@ public class Login implements Command {
 
     static {
         menu.put(Role.STUDENT, new ArrayList<>(Arrays.asList(
-                new MenuItem("/stud/markList.html", "marks"),
-                new MenuItem("/stud/documentList.html", "document"),
+                new MenuItem("/mark/list.html", "marks"),
+                new MenuItem("/document/stud/list.html", "document"),
                 new MenuItem("/student/find.html", "profile"),
                 new MenuItem("/logout.html", "logout")
         )));
 
         menu.put(Role.ADMINISTRATOR, new ArrayList<>(Arrays.asList(
-                new MenuItem("/student/list.html", "studentList"),
+                new MenuItem("/student/list.html", "students"),
                 new MenuItem("/user/list.html", "userList"),
-                new MenuItem("/dean/list.html","deanList"),
+                new MenuItem("/dean/list.html", "deanList"),
                 new MenuItem("/logout.html", "logout")
-                )));
+        )));
 
         menu.put(Role.DEAN, new ArrayList<>(Arrays.asList(
-
+                new MenuItem("/student/list.html", "students"),
+                new MenuItem("/document/dean/list.html", "document"),
                 new MenuItem("/logout.html", "logout")
         )));
     }

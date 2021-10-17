@@ -98,7 +98,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         PreparedStatement statement;
         try {
             User user1 = findByLogin(user.getLogin());
-            if (user1 == null || !user1.getLogin().equals(user.getLogin()) || user1.getId().equals(user.getId()) ) {
+            if (user1 == null || !user1.getLogin().equals(user.getLogin()) || user1.getId().equals(user.getId())) {
                 statement = connection.prepareStatement(UPDATE);
                 statement.setString(1, user.getLogin());
                 statement.setInt(2, user.getRole().getValue());
@@ -137,6 +137,36 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         } catch (SQLException e) {
             debugLog.debug("error" + e);
             throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public Integer createGeneratedUser(String name, String lastname) throws DaoException {
+        String randomGeneratedLogin = name + lastname;
+
+        if (findByLogin(randomGeneratedLogin) != null) {
+            int k = 0;
+            while (findByLogin(randomGeneratedLogin + k) == null) {
+                k++;
+            }
+            randomGeneratedLogin += k;
+        }
+        PreparedStatement statement;
+        try {
+            statement = connection.prepareStatement(CREATE);
+            statement.setString(1, randomGeneratedLogin);
+            statement.setString(2, "randomPass");
+            statement.setInt(3, Role.STUDENT.getValue());
+            if (statement.executeUpdate() < 0) {
+                return null;
+            }
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return null;
+        } catch (SQLException throwables) {
+            throw new DaoException(throwables);
         }
     }
 

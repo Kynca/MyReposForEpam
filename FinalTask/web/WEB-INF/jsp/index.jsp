@@ -16,8 +16,13 @@
         </div>
         <div class="col-2">
             <div class="btn-group-vertical btn-group-sm">
+                <c:url var="action" value="/.html"/>
+                <form method="post" action="${action}">
+                    <button type="submit" name="language" value="ru_Ru"> Русский </button>
+                    <button type="submit" name="language" value="en_EN"> English</button>
+                </form>
                 <a href="index.jsp" class="btn" role="button"> Русский</a>
-                <a href="index.jsp" class="btn" role="button"> Кнопка</a>
+                <a href="index.jsp" class="btn" role="button"> English</a>
             </div>
         </div>
     </div>

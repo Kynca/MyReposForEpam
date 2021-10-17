@@ -35,6 +35,7 @@ public class CommandFromUriFilter implements Filter {
 
     static {
         repository.put("/", new Index());
+        repository.put("/index", new Index());
         repository.put("/loginForm", new LoginForm());
         repository.put("/login", new Login());
         repository.put("/logout", new LogOut());

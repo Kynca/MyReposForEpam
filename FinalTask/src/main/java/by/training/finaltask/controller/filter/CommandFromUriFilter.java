@@ -2,10 +2,11 @@ package by.training.finaltask.controller.filter;
 
 import by.training.finaltask.controller.Command;
 import by.training.finaltask.controller.commands.*;
-import by.training.finaltask.controller.commands.AddDocument;
-import by.training.finaltask.controller.commands.ViewDocTypes;
-import by.training.finaltask.controller.commands.ViewListOfMarks;
+import by.training.finaltask.controller.commands.documents.AddDocument;
+import by.training.finaltask.controller.commands.documents.ViewDocTypes;
+import by.training.finaltask.controller.commands.marks.ViewListOfMarks;
 import by.training.finaltask.controller.commands.dean.*;
+import by.training.finaltask.controller.commands.documents.ViewDocList;
 import by.training.finaltask.controller.commands.student.EditStudent;
 import by.training.finaltask.controller.commands.student.FindStudent;
 import by.training.finaltask.controller.commands.student.ProcessStudent;
@@ -14,6 +15,10 @@ import by.training.finaltask.controller.commands.user.EditUser;
 import by.training.finaltask.controller.commands.user.FindUser;
 import by.training.finaltask.controller.commands.user.ProcessUser;
 import by.training.finaltask.controller.commands.user.ViewUsers;
+import by.training.finaltask.controller.commands.utils.Index;
+import by.training.finaltask.controller.commands.Login;
+import by.training.finaltask.controller.commands.utils.LoginForm;
+import by.training.finaltask.controller.commands.utils.ProfileDefiner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +38,7 @@ public class CommandFromUriFilter implements Filter {
         repository.put("/loginForm", new LoginForm());
         repository.put("/login", new Login());
         repository.put("/logout", new LogOut());
-        repository.put("/profile", new Profile());
+        repository.put("/profile", new ProfileDefiner());
         repository.put("/viewDeanInfo",new ViewDeanInfo());
 
         repository.put("/stud/markList", new ViewListOfMarks());

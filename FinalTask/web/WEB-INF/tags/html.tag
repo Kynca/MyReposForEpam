@@ -2,9 +2,8 @@
 <%@attribute name="title" required="true" type="java.lang.String" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-
-<fmt:setLocale value="ru_RU" scope="session"/>
-<fmt:setBundle basename="properties.languages"/>
+<fmt:setBundle basename="properties.languages" scope="session"/>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">

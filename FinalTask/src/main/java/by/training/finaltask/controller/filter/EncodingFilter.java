@@ -22,6 +22,7 @@ public class EncodingFilter implements Filter {
         servletRequest.setCharacterEncoding("UTF-8");
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         httpResponse.setCharacterEncoding("UTF-8");
+        debugLog.debug(servletRequest.getLocale().getLanguage() + servletRequest.getLocale().getCountry());
 
         httpResponse.setHeader("Cache-Control","no-cache");
         httpResponse.setHeader("Pragma","no-cache");

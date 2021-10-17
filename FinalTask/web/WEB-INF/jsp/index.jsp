@@ -21,8 +21,6 @@
                     <button type="submit" name="language" value="ru_Ru"> Русский </button>
                     <button type="submit" name="language" value="en_EN"> English</button>
                 </form>
-                <a href="index.jsp" class="btn" role="button"> Русский</a>
-                <a href="index.jsp" class="btn" role="button"> English</a>
             </div>
         </div>
     </div>

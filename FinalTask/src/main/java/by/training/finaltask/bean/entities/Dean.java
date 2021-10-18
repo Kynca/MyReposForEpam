@@ -2,6 +2,8 @@ package by.training.finaltask.bean.entities;
 
 import by.training.finaltask.bean.Entity;
 
+import java.util.Objects;
+
 public class Dean extends Entity {
     private String address;
     private String faculty;
@@ -76,5 +78,18 @@ public class Dean extends Entity {
                 ", university_id=" + universityId +
                 ", universityName='" + universityName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dean dean = (Dean) o;
+        return address.equals(dean.address) && faculty.equals(dean.faculty) && phoneNumber.equals(dean.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(address, faculty, phoneNumber);
     }
 }

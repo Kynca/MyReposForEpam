@@ -30,10 +30,13 @@ public class ViewStudentList implements AdminCommand, DeanCommand {
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         debugLog.debug("in studentList");
         Result result;
-        User user = (User) request.getSession(false).getAttribute("user");
+        User user = (User) request.getSession(false).getAttribute("authorizedUser");
+        debugLog.debug("user =" + user);
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
+            debugLog.debug("get stud service");
             if (user.getRole() == Role.ADMINISTRATOR) {
+                debugLog.debug("in admin");
                 Map<Student, Dean> studentsInfo = studentService.viewStudentsInfo();
                 if (studentsInfo != null) {
                     request.setAttribute("studentsInfo", studentsInfo);

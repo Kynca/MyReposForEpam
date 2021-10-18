@@ -37,9 +37,8 @@ public class Document extends Entity {
         this.studentId = studentId;
     }
 
-    public Document(String orderDate, Integer typeId, boolean deliveryType, String receiverName, String receiverMail,
+    public Document(Integer typeId, boolean deliveryType, String receiverName, String receiverMail,
                     String comment, Integer studentId) {
-        this.orderDate = orderDate;
         this.typeId = typeId;
         this.deliveryType = deliveryType;
         status = false;
@@ -139,12 +138,12 @@ public class Document extends Entity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderDate, documentType, status, deliveryType, documentPath, receiverName, receiverMail, comment, studentId, typeId);
+        return Objects.hash(documentType, status, deliveryType, documentPath, receiverName, receiverMail, comment, studentId, typeId);
     }
 
     @Override
     public String toString() {
-        return "Document{" +
+        return "Document{" + super.getId() + " " +
                 "orderDate='" + orderDate + '\'' +
                 ", documentType='" + documentType + '\'' +
                 ", status=" + status +

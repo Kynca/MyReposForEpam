@@ -17,7 +17,8 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
     private static final String SELECT = "SELECT document.id, order_date, type_id, status, delivery_type, comment, document.document, student_id, receiver_name, receiver_mail, type " +
             " FROM document INNER JOIN document_type dt on document.type_id = dt.id";
     private static final String SELECT_FOR_UPDATE = "SELECT id, document FROM document WHERE id = ?";
-    private static final String CREATE = "INSERT INTO document(order_date, type_id, status, delivery_type, comment, student_id, receiver_name, receiver_mail) VALUES (?,?,?,?,?,?,?,?)";
+    private static final String CREATE = "INSERT INTO document(type_id, status, delivery_type, comment, student_id, receiver_name, receiver_mail, order_date)" +
+            " VALUES (?,?,?,?,?,?,?, CURRENT_DATE)";
     private static final String DELETE = "DELETE FROM document WHERE id = ?";
     private static final String UPDATE = "UPDATE document SET document = ?, status = true WHERE id = ?";
     private static final String SELECT_BY_DEAN = "SELECT document.id, order_date, type, status, delivery_type,type_id, comment, document.document, student_id, receiver_name, receiver_mail" +
@@ -92,14 +93,13 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
 
         try {
             PreparedStatement statement = connection.prepareStatement(CREATE);
-            statement.setDate(1, Date.valueOf(document.getOrderDate()));
-            statement.setInt(2, document.getTypeId());
-            statement.setBoolean(3, document.getStatus());
-            statement.setBoolean(4, document.getDeliveryType());
-            statement.setString(5, document.getComment());
-            statement.setInt(6, document.getStudentId());
-            statement.setString(7, document.getReceiverName());
-            statement.setString(8, document.getReceiverMail());
+            statement.setInt(1, document.getTypeId());
+            statement.setBoolean(2, document.getStatus());
+            statement.setBoolean(3, document.getDeliveryType());
+            statement.setString(4, document.getComment());
+            statement.setInt(5, document.getStudentId());
+            statement.setString(6, document.getReceiverName());
+            statement.setString(7, document.getReceiverMail());
             int rows = statement.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
@@ -129,7 +129,7 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                documents.add(setDoc(rs, false));
+                documents.add(setDoc(rs, true));
             }
             return documents;
         } catch (SQLException throwables) {
@@ -190,10 +190,10 @@ public class DocumentDaoImpl extends BaseDao implements DocumentDao {
         }
     }
 
-    private Document setDoc(ResultSet resultSet, boolean isDean) throws SQLException {
+    private Document setDoc(ResultSet resultSet, boolean isFull) throws SQLException {
         debugLog.debug("in set doc");
         Document document = new Document();
-        if (isDean) {
+        if (isFull) {
             document.setId(resultSet.getInt("document.id"));
         }
         document.setOrderDate(resultSet.getString("order_date"));

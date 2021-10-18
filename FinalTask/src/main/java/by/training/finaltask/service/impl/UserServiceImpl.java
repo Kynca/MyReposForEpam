@@ -90,6 +90,9 @@ public class UserServiceImpl extends BaseService implements UserService {
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(userDao, studentDao, documentDao);
         debugLog.debug("init transaction");
+        if(id == null){
+            return false;
+        }
         try {
             User user = userDao.findById(id);
             if(user == null || user.getRole() == Role.ADMINISTRATOR){
@@ -97,12 +100,10 @@ public class UserServiceImpl extends BaseService implements UserService {
             }
             List<Document> documents = documentDao.findByUserId(id);
             if (documents.size() > 0) {
-                for (Document document : documents) {
                     if (!documentDao.deleteUserReferences(id)) {
-                        debugLog.debug("cannot update doc " + document);
+                        debugLog.debug("cannot update doc ");
                         return false;
                     }
-                }
             }
             debugLog.debug("checked documents");
             if (studentDao.findById(id) == null || studentDao.delete(id)) {
@@ -153,11 +154,14 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public boolean updateUser(User user) throws ServiceException {
         debugLog.debug("in user service update " + user);
-        if (user != null && user.getId() != null && user.getRole() != Role.ADMINISTRATOR && user.getLogin() != null) {
+        if (user != null && user.getId() != null && user.getRole() != null && user.getRole() != Role.ADMINISTRATOR && user.getLogin() != null) {
             UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
             transaction.init(userDao);
             debugLog.debug("init transaction");
             try {
+                if(userDao.findById(user.getId()) == user){
+                    return true;
+                }
                 return userDao.update(user);
             } catch (DaoException e) {
                 transaction.rollback();

@@ -44,11 +44,10 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
     @Override
     public boolean updateDean(Dean dean) throws ServiceException {
-
         DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
         UniversityDao universityDao = DaoFactory.getInstance().getUniversityDao();
         transaction.init(deanDao);
-        if (dean != null && dean.getId() != null && check(dean, universityDao)) {
+        if (dean != null && check(dean, universityDao)) {
             try {
                 return deanDao.update(dean);
             } catch (DaoException e) {
@@ -157,12 +156,12 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
         debugLog.debug(id + " " + length + " " + address, " " + universityId);
 
-        if (address == null && length >= 10 && length <= 13) {
+        if (address == null || !(length >= 10 && length <= 13) || dean.getFaculty() == null || id == null) {
             return false;
         }
         debugLog.debug("check 1 pass");
         try {
-            if (universityId == null && universityDao.findById(universityId) == null) {
+            if (universityId == null || universityDao.findById(universityId) == null) {
                 return false;
             }
             debugLog.debug("check 2 pass");

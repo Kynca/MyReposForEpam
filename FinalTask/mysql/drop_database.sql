@@ -1,2 +1,3 @@
 DROP DATABASE IF EXISTS document_handler;
-DROP USER 'app';
+DROP USER IF EXISTS 'app';
+DROP TRIGGER IF EXISTS set_date;

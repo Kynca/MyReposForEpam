@@ -3,6 +3,8 @@ package by.training.finaltask.dao.daoimpl;
 import by.training.finaltask.bean.entities.Mark;
 import by.training.finaltask.dao.MarkDao;
 import by.training.finaltask.dao.exception.DaoException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarkDaoImpl extends BaseDao implements MarkDao {
+    private static final Logger debugLog = LogManager.getLogger("DebugLog");
 
     private static final String FIND_BY_STUDENT_ID = "SELECT name, rate, issue_date, student_id  FROM marks " +
-            "INNER JOIN subject s on marks.subject_id = s.id";
+            "INNER JOIN subject s on marks.subject_id = s.id WHERE student_id = ?";
     private static final String FIND_SUBJECT = "SELECT id FROM subject WHERE name = ?";
     private static final String INSERT = "INSERT INTO marks(subject_id, rate, issue_date, student_id) VALUES (?,?,?,?) ";
     private static final String UPDATE = "UPDATE marks SET rate = ? WHERE subject_id = ? AND student_id = ?";
@@ -61,6 +64,7 @@ public class MarkDaoImpl extends BaseDao implements MarkDao {
         List<Mark> marks = new ArrayList<>();
         try {
             PreparedStatement statement = connection.prepareStatement(FIND_BY_STUDENT_ID);
+            statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                 String name = rs.getString("name");
@@ -72,6 +76,7 @@ public class MarkDaoImpl extends BaseDao implements MarkDao {
             }
             return marks;
         } catch (SQLException throwables) {
+
             throw new DaoException(throwables);
         }
     }
@@ -87,6 +92,7 @@ public class MarkDaoImpl extends BaseDao implements MarkDao {
             }
             return result;
         } catch (SQLException throwables) {
+            debugLog.debug(throwables);
             throw new DaoException(throwables);
         }
     }

@@ -132,10 +132,11 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
         PreparedStatement statement;
         try {
             statement = connection.prepareStatement(SELECT_BY_DEAN);
+            statement.setInt(1, deanId);
             ResultSet resultSet = statement.executeQuery();
             List<Student> students = new ArrayList<>();
             while (resultSet.next()) {
-                setStudent(resultSet);
+               students.add(setStudent(resultSet));
             }
             return students;
         } catch (SQLException throwables) {

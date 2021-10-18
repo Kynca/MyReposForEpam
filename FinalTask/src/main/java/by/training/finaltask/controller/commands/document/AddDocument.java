@@ -36,14 +36,7 @@ public class AddDocument implements StudentCommand {
                 String receiverName = request.getParameter("receiverName");
                 String receiverMail = request.getParameter("receiverMail");
                 String comment = request.getParameter("comment");
-                String currentDate = (2000 + Calendar.YEAR)  + "-";
-                        if(Calendar.MONTH < 10){
-                            currentDate += "0" + (Calendar.MONTH + 1) + "-";
-                        }
-                        if(Calendar.DAY_OF_MONTH < 10){
-                            currentDate += "0" + Calendar.DAY_OF_MONTH;
-                        }
-                Document document = new Document(currentDate, Integer.valueOf(docTypeId), deliveryType, receiverName, receiverMail, comment, id);
+                Document document = new Document(Integer.valueOf(docTypeId), deliveryType, receiverName, receiverMail, comment, id);
                 debugLog.debug("created document");
                 DocumentService documentService = ServiceFactory.getInstance().getDocumentService();
                 debugLog.debug("get service");

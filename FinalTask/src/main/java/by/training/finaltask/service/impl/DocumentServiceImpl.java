@@ -13,6 +13,7 @@ import by.training.finaltask.service.excpetion.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,7 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(documentDao);
         debugLog.debug("init Transaction");
-        List<Document> documents = null;
+        List<Document> documents = new ArrayList<>();
         try {
             if (id != null) {
                 if (isDean) {
@@ -68,9 +69,12 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(documentDao);
         try {
+            if (id == null){
+                return false;
+            }
             Document document = documentDao.findById(id);
             debugLog.debug("doc founded" + document);
-            if (document != null && !filepath.isEmpty()) {
+            if (document != null && !filepath.isEmpty() && document.getDocumentPath().isEmpty()) {
                 debugLog.debug("setting path");
                 document.setDocumentPath(filepath);
                 return documentDao.update(document);

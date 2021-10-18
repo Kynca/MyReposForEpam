@@ -38,14 +38,14 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
                     id = (Integer) request.getSession(false).getAttribute("id");
                     debugLog.debug("id" + id);
                     result = new Result(Page.STUDENT_EDIT_JSP, false);
-                    Student student = studentService.viewInfo(id);
+                    Student student = studentService.viewInfo(id, true);
                     debugLog.debug("student founded and =" + student);
                     request.setAttribute("student", student);
                     break;
                 case STUDENT, DEAN:
                     result = new Result(Page.VIEW_DEAN_INFO, true);
                     id = user.getId();
-                    student = studentService.viewInfo(id);
+                    student = studentService.viewInfo(id, false);
                     debugLog.debug("student founded and =" + student);
                     if (student == null) {
                         if (user.getRole() == Role.STUDENT) {

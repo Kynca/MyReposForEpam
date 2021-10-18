@@ -8,6 +8,7 @@ import by.training.finaltask.service.BaseService;
 import by.training.finaltask.service.MarkService;
 import by.training.finaltask.service.excpetion.ServiceException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MarkServiceImpl extends BaseService implements MarkService {
@@ -20,7 +21,7 @@ public class MarkServiceImpl extends BaseService implements MarkService {
             if (id != null && id > 0) {
                 return markDao.findByStudentId(id);
             }
-            return null;
+            return new ArrayList<Mark>();
         } catch (DaoException e) {
             throw new ServiceException(e);
         }finally {

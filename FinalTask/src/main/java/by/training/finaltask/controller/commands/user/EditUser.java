@@ -19,28 +19,29 @@ import javax.servlet.http.HttpServletResponse;
 
 public class EditUser implements AdminCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
+        request.getSession(false).removeAttribute("incorrectData");
         try {
             UserService userService = ServiceFactory.getInstance().getUserService();
             String login = request.getParameter("login");
             Role role = Role.getByCode(Integer.valueOf(request.getParameter("role")));
-            debugLog.debug("init variables");
             Integer id = Integer.valueOf(request.getParameter("id"));
-            debugLog.debug("init id = " + id);
             User user = new User(id, login, role);
             if (userService.updateUser(user)) {
                 result = new Result(Page.USER_LIST_HTML, true);
             } else {
                 request.getSession().setAttribute("id", id);
+                request.getSession(false).setAttribute("incorrectData", "incorrectData");
                 result = new Result(Page.USER_FIND, true);
             }
         } catch (ServiceException e) {
-            debugLog.debug(e + e.getMessage());
-            result = new Result(Page.ERROR, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         }
         return result;
 

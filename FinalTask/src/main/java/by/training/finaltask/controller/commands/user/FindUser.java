@@ -16,22 +16,23 @@ import javax.servlet.http.HttpServletResponse;
 
 public class FindUser implements AdminCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
-        debugLog.debug("in find user");
+        request.getSession(false).removeAttribute("incorrectData");
         try {
             Integer id = (Integer) request.getSession(false).getAttribute("id");
-            debugLog.debug(id);
             UserService userService = ServiceFactory.getInstance().getUserService();
             User user = userService.findUser(id);
-            debugLog.debug("student founded and =" + user);
+            controllerLog.info("student founded and =" + user);
             request.setAttribute("user", user);
             result = new Result(Page.USER_EDIT_JSP, false);
         } catch (ServiceException e) {
-            result = new Result(Page.USER_LIST_HTML, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         }
         return result;
     }

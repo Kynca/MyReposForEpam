@@ -22,7 +22,6 @@ public class ProfileDefiner implements AdminCommand, StudentCommand, DeanCommand
         switch (user.getRole()) {
             case STUDENT, DEAN:
                 result = new Result(Page.STUDENT_FIND, true);
-                request.getSession(false).setAttribute("id", user.getId());
                 break;
             case ADMINISTRATOR:
                 result = new Result(Page.PROFILE_JSP, false);

@@ -22,14 +22,14 @@ import java.util.Set;
 
 public class ViewDeanInfo implements StudentCommand, DeanCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        debugLog.debug("in view dean");
+        controllerLog.debug("in viewDean");
         Student student = (Student) request.getSession(false).getAttribute("student");
         request.getSession().removeAttribute("student");
-        debugLog.debug("get student =" + student);
+        controllerLog.debug("get student = " + student);
         Integer id = student.getDeanId();
         request.getSession(false).setAttribute("deanId", id);
         try {
@@ -40,9 +40,12 @@ public class ViewDeanInfo implements StudentCommand, DeanCommand {
                 request.setAttribute("student", student);
                 return new Result(Page.PROFILE_JSP, false);
             }
+            controllerLog.info("cannot find user dean");
             return new Result(Page.LOGIN_FORM, true);
         } catch (ServiceException e) {
-            return new Result(Page.ERROR, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession().setAttribute("error",  e.getMessage());
+            return new Result(Page.ERROR, false);
         }
     }
 

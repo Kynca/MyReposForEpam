@@ -1,7 +1,7 @@
 package by.training.finaltask.bean.page;
 
 public enum Page {
-    ERROR("/WEB-INF/jsp/error.jsp"),
+    ERROR("/error.jsp"),
     LOGIN("/login.jsp"),
     LOGIN_FORM("/loginForm.html"),
     PROFILE_JSP("/profile.jsp"),
@@ -9,7 +9,8 @@ public enum Page {
     INDEX("/index.jsp"),
     INDEX_HTML("/.html"),
 
-    ADMIN_STUDENT_LIST("/student/list.jsp"),
+    ADMIN_STUDENT_LIST("/student/adminList.jsp"),
+    DEAN_STUDENT_LIST("/student/deanList.jsp"),
     STUDENT_LIST_HTML("/student/list.html"),
     STUDENT_EDIT_JSP("/student/edit.jsp"),
     STUDENT_EDIT_HTML("/student/edit.html"),

@@ -26,7 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Login implements Command {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
+
     private static Map<Role, List<MenuItem>> menu = new ConcurrentHashMap<>();
 
     static {
@@ -55,23 +56,26 @@ public class Login implements Command {
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         String login = request.getParameter("login");
         String pass = request.getParameter("password");
+        request.getSession(false).removeAttribute("incorrectData");
         if (pass != null && login != null) {
             try {
                 UserServiceImpl userService = ServiceFactory.getInstance().getUserService();
                 User user = userService.login(login, pass);
-                debugLog.debug("service done");
                 if (user != null) {
                     HttpSession session = request.getSession(false);
                     session.setAttribute("authorizedUser", user);
                     session.setAttribute("menu", menu.get(user.getRole()));
                     request.setAttribute("userRole", user.getRole().getValue());
-                    debugLog.debug("we authorise user");
+                    controllerLog.info("we authorise user");
                     return new Result(Page.PROFILE_HTML, true);
                 } else {
+                    controllerLog.info("can not authorise user");
+                    request.setAttribute("incorrectData", "incorrectData");
                     return new Result(Page.LOGIN_FORM, true);
                 }
             } catch (ServiceException e) {
-                debugLog.debug(e.getMessage(), e);
+                controllerLog.error(e.getMessage(), e);
+                request.getSession(false).setAttribute("error", e.getMessage());
                 return new Result(Page.ERROR, false);
             }
         } else {

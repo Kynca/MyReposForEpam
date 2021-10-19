@@ -24,19 +24,18 @@ import java.util.Set;
 
 public class ViewStudentList implements AdminCommand, DeanCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        debugLog.debug("in studentList");
+        request.getSession(false).removeAttribute("incorrectData");
         Result result;
         User user = (User) request.getSession(false).getAttribute("authorizedUser");
-        debugLog.debug("user =" + user);
+        controllerLog.debug("user =" + user);
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
-            debugLog.debug("get stud service");
             if (user.getRole() == Role.ADMINISTRATOR) {
-                debugLog.debug("in admin");
+                controllerLog.debug("in admin");
                 Map<Student, Dean> studentsInfo = studentService.viewStudentsInfo();
                 if (studentsInfo != null) {
                     request.setAttribute("studentsInfo", studentsInfo);
@@ -46,14 +45,14 @@ public class ViewStudentList implements AdminCommand, DeanCommand {
                 result = new Result(Page.ADMIN_STUDENT_LIST, false);
             }else {
                 Integer deanId = (Integer) request.getSession(false).getAttribute("deanId");
-                studentService.viewDeanStudents(deanId);
                 List<Student> studentList = studentService.viewDeanStudents(deanId);
                 request.setAttribute("students", studentList);
-//                result = new Result(Page.DEAN_STUDENT_LIST_HTML); TODO separated dean and admin edition
-                return new Result(Page.ERROR, true);
+                result = new Result(Page.DEAN_STUDENT_LIST, false);
+                controllerLog.info("students found and set");
             }
         } catch (ServiceException e) {
-            debugLog.debug("catch exception" + e.getMessage() + e);
+            controllerLog.error(e.getMessage() + e);
+            request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
         }
         return result;

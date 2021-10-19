@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ViewDocTypes implements StudentCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) {
@@ -25,11 +25,11 @@ public class ViewDocTypes implements StudentCommand {
             result = new Result(Page.DOCUMENT_ORDER_JSP,false);
             DocumentService service = ServiceFactory.getInstance().getDocumentService();
             List<Document> documents = service.viewTypes();
-            debugLog.debug(documents.toString());
             request.setAttribute("docType",documents);
         } catch (ServiceException e) {
-            debugLog.debug("catch exception");
-            result = new Result(Page.ERROR,false);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         }
         return result;
     }

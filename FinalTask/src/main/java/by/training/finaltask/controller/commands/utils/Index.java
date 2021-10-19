@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 
 public class Index implements Command {
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
+
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         String language = request.getParameter("language");
-        debugLog.debug("in index command" + language);
+        controllerLog.info("in index command" + language);
         if(language != null){
             String[] params = language.split("_");
             Locale locale = new Locale(params[0],params[1]);

@@ -17,21 +17,20 @@ import java.util.List;
 
 public class FindUniversities implements AdminCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        debugLog.debug("in findUni");
         Result result;
         try {
             DeanService deanService = ServiceFactory.getInstance().getDeanService();
             List<University> universities = deanService.findUniversities();
-            debugLog.debug("find universities");
             request.setAttribute("universities", universities);
-            debugLog.debug("seted attribute" + request.getAttribute("universities"));
+            controllerLog.info("set attribute" + request.getAttribute("universities"));
             result = new Result(Page.DEAN_CREATE_JSP, false);
         } catch (ServiceException e) {
-            debugLog.debug("catch exception");
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
         }
         return result;

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarkDaoImpl extends BaseDao implements MarkDao {
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger daoLog = LogManager.getLogger(MarkDaoImpl.class.getName());
 
     private static final String FIND_BY_STUDENT_ID = "SELECT name, rate, issue_date, student_id  FROM marks " +
             "INNER JOIN subject s on marks.subject_id = s.id WHERE student_id = ?";
@@ -38,35 +38,50 @@ public class MarkDaoImpl extends BaseDao implements MarkDao {
 
     @Override
     public boolean create(Mark entity) throws DaoException {
+        PreparedStatement statement = null;
         try {
-            PreparedStatement statement = connection.prepareStatement(INSERT);
+            statement = connection.prepareStatement(INSERT);
             return statement.executeUpdate() > 0;
         } catch (SQLException throwables) {
-            throw  new DaoException(throwables);
+            throw new DaoException(throwables);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException throwables) {
+            }
         }
     }
 
     @Override
     public boolean update(Mark entity) throws DaoException {
+        PreparedStatement statement = null;
         try {
-            PreparedStatement statement = connection.prepareStatement(UPDATE);
+            statement = connection.prepareStatement(UPDATE);
             statement.setDouble(1, entity.getRate());
             statement.setInt(2, findSubject(entity.getSubjectName()));
             statement.setInt(3, entity.getStudentId());
             return statement.executeUpdate() > 0;
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
-    public List<Mark> findByStudentId(Integer id) throws DaoException{
+    public List<Mark> findByStudentId(Integer id) throws DaoException {
         List<Mark> marks = new ArrayList<>();
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
         try {
-            PreparedStatement statement = connection.prepareStatement(FIND_BY_STUDENT_ID);
+            statement = connection.prepareStatement(FIND_BY_STUDENT_ID);
             statement.setInt(1, id);
-            ResultSet rs = statement.executeQuery();
-            while(rs.next()){
+            rs = statement.executeQuery();
+            while (rs.next()) {
                 String name = rs.getString("name");
                 Double rate = rs.getDouble("rate");
                 String date = String.valueOf(rs.getDate("issue_date"));
@@ -76,24 +91,36 @@ public class MarkDaoImpl extends BaseDao implements MarkDao {
             }
             return marks;
         } catch (SQLException throwables) {
-
             throw new DaoException(throwables);
+        } finally {
+            try {
+                rs.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
-    public Integer findSubject(String name) throws DaoException{
+    public Integer findSubject(String name) throws DaoException {
+        PreparedStatement statement = null;
+        ResultSet rs = null;
         Integer result = null;
         try {
-            PreparedStatement statement = connection.prepareStatement(FIND_SUBJECT);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()){
-               result = rs.getInt("id");
+            statement = connection.prepareStatement(FIND_SUBJECT);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt("id");
             }
             return result;
         } catch (SQLException throwables) {
-            debugLog.debug(throwables);
             throw new DaoException(throwables);
+        } finally {
+            try {
+                rs.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 

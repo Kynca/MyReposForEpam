@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class StudentServiceImpl extends BaseService implements StudentService {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger serviceLog = LogManager.getLogger("ServiceLog");
 
     @Override
     public Student viewInfo(Integer id, boolean isAdmin) throws ServiceException {
@@ -28,11 +28,14 @@ public class StudentServiceImpl extends BaseService implements StudentService {
         StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
         UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
         transaction.init(studentDao, userDao);
-        debugLog.debug("in find");
+        serviceLog.debug("in find");
         try {
             Student student = studentDao.findById(id);
             User user = userDao.findById(id);
-            if(user.getRole() == Role.STUDENT) {
+            if(user == null){
+                return null;
+            }
+            if(user.getRole() == Role.STUDENT || user.getRole() == Role.DEAN) {
                 return student;
             }
             if(isAdmin && user.getRole() != Role.ADMINISTRATOR){
@@ -50,7 +53,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public boolean updateInfo(Student student) throws ServiceException {
         if (student != null) {
             if(!studentCheck(student)){
-                debugLog.debug("student dont match");
+                serviceLog.info("student dont match");
                 return false;
             }
             StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
@@ -60,12 +63,12 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                 if(student.getId() != null){
                     User user = userDao.findById(student.getId());
                     if(user.getRole() == Role.ADMINISTRATOR){
-                        debugLog.debug("student is admin");
+                        serviceLog.info("student is admin");
                         return false;
                     }
                     return studentDao.update(student);
                 }
-                debugLog.debug("id = null");
+                serviceLog.info("id = null");
                return false;
             } catch (DaoException e) {
                 transaction.rollback();
@@ -74,13 +77,13 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                 transaction.endTransaction();
             }
         } else {
-            //logger
             return false;
         }
     }
 
     @Override
     public List<Student> viewDeanStudents(Integer id) throws ServiceException {
+        serviceLog.info("in view dean student");
         StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
         transaction.init(studentDao);
         if(id == null){
@@ -97,7 +100,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
 
     @Override
     public Map<Student, Dean> viewStudentsInfo() throws ServiceException {
-        debugLog.debug("in service");
+        serviceLog.debug("in service");
         try {
             Map<Student, Dean> studentDeanMap = new HashMap<>();
             StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
@@ -110,7 +113,6 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             }
             return studentDeanMap;
         } catch (DaoException e) {
-            debugLog.debug("catch daoException");
             throw new ServiceException(e);
         }
     }
@@ -143,7 +145,6 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                 transaction.endTransaction();
             }
         } else {
-            //logger
             return false;
         }
     }
@@ -172,7 +173,6 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                     return false;
                 }
             } catch (DaoException e) {
-                debugLog.debug("catch daoException");
                 transaction.rollback();
                 throw new ServiceException(e);
             } finally {
@@ -187,18 +187,21 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                 "+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}");
         boolean result = pattern.matcher(student.getMail()).matches();
         if (!result) {
-            debugLog.debug("mail dont macth" + student.getMail());
+            serviceLog.info("mail dont macth" + student.getMail());
             return false;
         }
         if (student.getName() == null || student.getDeanId() == null || student.getDate() == null ||
                 student.getLastname() == null || student.getPatronymic() == null) {
-            debugLog.debug("something dont match");
+            serviceLog.info("something dont match");
+            return false;
+        }
+        if(student.getName().length() > 15 || student.getPatronymic().length() > 20 || student.getLastname().length() > 25){
             return false;
         }
 
         pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
         if (!pattern.matcher(student.getDate()).matches()) {
-            debugLog.debug("data dont macth");
+            serviceLog.info("data dont macth");
             return false;
         }
         return true;

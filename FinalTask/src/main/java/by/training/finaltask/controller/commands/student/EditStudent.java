@@ -16,10 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class EditStudent implements AdminCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        request.getSession(false).removeAttribute("incorrectData");
         Result result;
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
@@ -29,20 +30,22 @@ public class EditStudent implements AdminCommand {
             String date = request.getParameter("date");
             String mail = request.getParameter("mail");
             Integer dean_id = Integer.valueOf(request.getParameter("deanId"));
-            debugLog.debug("init variables");
             Integer id = Integer.valueOf(request.getParameter("id"));
-            debugLog.debug("init id = " + id);
             Student student = new Student(id, name, lastname, patronymic, date, mail, dean_id);
 
             if (studentService.updateInfo(student)) {
+                controllerLog.info("updated info");
                 result = new Result(Page.STUDENT_LIST_HTML, true);
                 request.getSession(false).removeAttribute("id");
             } else {
                 request.setAttribute("id", id);
-                result = new Result(Page.STUDENT_EDIT_JSP, true);
+                request.getSession(false).setAttribute("incorrectData", "incorrectData");
+                result = new Result(Page.STUDENT_FIND, true);
             }
         } catch (ServiceException e) {
-            result = new Result(Page.ERROR, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         }
         return result;
     }

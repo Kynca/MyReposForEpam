@@ -17,20 +17,22 @@ import java.util.List;
 
 public class ViewUsers implements AdminCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        debugLog.debug("in viewUsers");
         Result result;
+        request.getSession(false).removeAttribute("incorrectData");
         try {
             UserService userService = ServiceFactory.getInstance().getUserService();
             List<User> users = userService.viewUsers();
             request.setAttribute("users", users);
+
             result = new Result(Page.USER_LIST_JSP,false);
         } catch (ServiceException e) {
-            debugLog.debug(e + e.getMessage());
-            result = new Result(Page.ERROR, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         }
         return result;
     }

@@ -15,24 +15,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class ViewStudentDocuments implements StudentCommand {
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response){
-        debugLog.debug("in doc");
+        request.getSession(false).removeAttribute("incorrectData");
         Integer id = (Integer) request.getAttribute("identity");
         Result result = new Result(Page.DOCUMENT_LIST, false);
         if (id != null) {
             try {
                 DocumentService service = ServiceFactory.getInstance().getDocumentService();
-                debugLog.debug("get service");
                 List<Document> documents = service.viewDocuments(id, false);
-                debugLog.debug("view doc");
                 request.setAttribute("documents", documents);
-                debugLog.debug("in the end of doc");
             } catch (ServiceException e) {
-                debugLog.debug(e.getMessage() + e.getMessage());
-                result = new Result(Page.ERROR, true);
+                controllerLog.error(e.getMessage() + e.getMessage());
+                request.getSession(false).setAttribute("error", e.getMessage());
+                result = new Result(Page.ERROR, false);
             }
         }
         return result;

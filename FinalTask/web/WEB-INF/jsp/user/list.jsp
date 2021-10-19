@@ -38,4 +38,17 @@
         <button type="submit"><fmt:message key="send"/></button>
     </form>
 
+    <c:if test="${not empty incorrectData}">
+        <div class="container mt-3">
+        <div class="toast show">
+            <div class="toast-header">
+                <strong class="me-auto">Toast Header</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                <p class="text-danger"><fmt:message key="incorrectData"/></p>
+            </div>
+        </div>
+    </c:if>
+
 </tag:html>

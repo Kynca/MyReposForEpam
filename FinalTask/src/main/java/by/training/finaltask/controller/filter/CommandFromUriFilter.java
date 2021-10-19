@@ -35,7 +35,7 @@ public class CommandFromUriFilter implements Filter {
         repository.put("/login", new Login());
         repository.put("/logout", new LogOut());
         repository.put("/profile", new ProfileDefiner());
-        repository.put("/viewDeanInfo",new ViewDeanInfo());
+        repository.put("/viewDeanInfo", new ViewDeanInfo());
 
         repository.put("/mark/list", new ViewListOfMarks());
 
@@ -59,8 +59,8 @@ public class CommandFromUriFilter implements Filter {
 
         repository.put("/document/dean/list", new ViewDeanDocuments());
         repository.put("/document/stud/list", new ViewStudentDocuments());
-        repository.put("/document/edit" , new EditDocument());
-        repository.put("/document/order",new ViewDocTypes());
+        repository.put("/document/edit", new EditDocument());
+        repository.put("/document/order", new ViewDocTypes());
         repository.put("/document/order/add", new AddDocument());
 
     }
@@ -88,15 +88,15 @@ public class CommandFromUriFilter implements Filter {
                 request.setAttribute("command", command);
                 debugLog.debug("set it");
                 filterChain.doFilter(servletRequest, servletResponse);
-            }catch (NullPointerException e){
-                debugLog.debug("error in uri filter");
+            } catch (NullPointerException e) {
+                debugLog.debug("error in uri filter" + e);
                 request.setAttribute("error", "неверный адресс" + commandName);//TODO
-                request.getServletContext().getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(servletRequest,servletResponse);
+                request.getServletContext().getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(servletRequest, servletResponse);
             }
-        }else{
+        } else {
             debugLog.debug("error in filter");
             servletRequest.setAttribute("error", "неверный адресс1");//TODO
-            servletRequest.getServletContext().getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(servletRequest,servletResponse);
+            servletRequest.getServletContext().getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(servletRequest, servletResponse);
         }
     }
 }

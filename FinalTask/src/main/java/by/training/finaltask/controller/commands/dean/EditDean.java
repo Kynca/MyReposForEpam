@@ -16,10 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class EditDean implements AdminCommand {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        request.getSession(false).removeAttribute("incorrectData");
         Result result;
         try {
             DeanService deanService = ServiceFactory.getInstance().getDeanService();
@@ -27,22 +28,25 @@ public class EditDean implements AdminCommand {
             String address = request.getParameter("address");
             Long phoneNum = Long.valueOf(request.getParameter("phoneNumber"));
             Integer universityId = Integer.valueOf(request.getParameter("unicId"));
-            debugLog.debug("init variables");
             Integer id = Integer.valueOf(request.getParameter("id"));
-            debugLog.debug("init id = " + id);
             Dean dean = new Dean(id, faculty, address, phoneNum, universityId);
 
             if (deanService.updateDean(dean)) {
+                controllerLog.info("success in update");
                 result = new Result(Page.DEAN_LIST_HTML, true);
                 request.getSession(false).removeAttribute("id");
             } else {
+                controllerLog.info("incorrect data");
+                request.getSession(false).setAttribute("incorrectData", "incorrectData");
                 result = new Result(Page.DEAN_FIND, true);
             }
         } catch (ServiceException e) {
-            debugLog.debug(e + e.getMessage());
-            result = new Result(Page.ERROR, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         } catch (NumberFormatException e) {
-            debugLog.debug(e + e.getMessage());
+            controllerLog.debug(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", "incorrectData");
             result = new Result(Page.DEAN_FIND, true);
         }
         return result;

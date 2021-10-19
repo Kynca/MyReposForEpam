@@ -18,37 +18,36 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ProcessDean implements AdminCommand {
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger controllerLog = LogManager.getLogger("ControllerLog");
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
-        debugLog.debug("in process");
+        request.getSession(false).removeAttribute("incorrectData");
         try {
             Integer id = Integer.valueOf(request.getParameter("id"));
             Boolean choice = Boolean.valueOf(request.getParameter("action"));
-            debugLog.debug("init" + id + " " + choice);
             if (choice) {
-                debugLog.debug("delete");
+                controllerLog.info(" choice was delete");
                 DeanService deanService = ServiceFactory.getInstance().getDeanService();
                 boolean isDeleted = deanService.deleteDean(id);
-                debugLog.debug("is deleted? =" + isDeleted);
+                controllerLog.info("is deleted? =" + isDeleted);
                 if (!isDeleted) {
-                    debugLog.debug("fail");
-                    request.setAttribute("msg", "incorrectData");
+                    request.getSession(false).setAttribute("incorrectData", "incorrectData");
                 }
                 result = new Result(Page.DEAN_LIST_HTML, true);
             } else {
-                debugLog.debug("edit");
+                controllerLog.info(" choice was edit student");
                 request.getSession(false).setAttribute("id", id);
                 result = new Result(Page.DEAN_FIND, true);
             }
         } catch (NumberFormatException e) {
-            request.setAttribute("msg", "incorrectData");
+            request.getSession(false).setAttribute("incorrectData", "incorrectData");
             result = new Result(Page.DEAN_LIST_HTML, true);
         } catch (ServiceException e) {
-            debugLog.debug("get exception" + e + e.getMessage());
-            result = new Result(Page.ERROR, true);
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("error", e.getMessage());
+            result = new Result(Page.ERROR, false);
         }
         return result;
     }

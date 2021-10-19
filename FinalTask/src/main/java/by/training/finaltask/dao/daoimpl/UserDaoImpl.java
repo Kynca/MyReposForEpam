@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoImpl extends BaseDao implements UserDao {
-    private final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger daoLog = LogManager.getLogger(UserDaoImpl.class.getName());
 
     private static final String SELECT = "SELECT id, login, role FROM program_user WHERE role NOT LIKE 0 ORDER BY id";
     private static final String SELECT_BY_ID = "SELECT id, login, role FROM program_user WHERE id = ?";
@@ -25,10 +25,11 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     @Override
     public List<User> findAll() throws DaoException {
         Statement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.createStatement();
             List<User> users = new ArrayList<>();
-            ResultSet resultSet = statement.executeQuery(SELECT);
+            resultSet = statement.executeQuery(SELECT);
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getInt("id"));
@@ -39,16 +40,23 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             return users;
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public User findById(Integer id) throws DaoException {
         PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.prepareStatement(SELECT_BY_ID);
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getInt("id"));
@@ -59,12 +67,17 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             return null;
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public boolean delete(Integer id) throws DaoException {
-        debugLog.debug("in dao delete");
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(DELETE);
@@ -73,29 +86,38 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             return rows > 0;
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public boolean create(User user) throws DaoException {
+        daoLog.info(user + " to create");
         PreparedStatement statement = null;
-        debugLog.debug("in dao");
         try {
             statement = connection.prepareStatement(CREATE);
             statement.setString(1, user.getLogin());
             statement.setInt(2, user.getRole().getValue());
             statement.setInt(3, user.getRole().getValue());
-            debugLog.debug(statement.toString());
             int rows = statement.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public boolean update(User user) throws DaoException {
-        PreparedStatement statement;
+        PreparedStatement statement = null;
         try {
             User user1 = findByLogin(user.getLogin());
             if (user1 == null || !user1.getLogin().equals(user.getLogin()) || user1.getId().equals(user.getId())) {
@@ -109,34 +131,40 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             }
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public User findByLoginPass(String login, String pass) throws DaoException {
         PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            debugLog.debug("we are in dao");
             DatabaseMetaData metaData = connection.getMetaData();
-            debugLog.debug(metaData.getUserName() + metaData.getURL() + metaData.getDatabaseProductName());
             statement = connection.prepareStatement(SELECT_LOGIN_PASS);
             statement.setString(1, login);
             statement.setString(2, pass);
-            debugLog.debug("we prepared statement");
             User user = null;
-            ResultSet resultSet = statement.executeQuery();
-            debugLog.debug("we prepared statement and result set");
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = new User();
                 user.setId(resultSet.getInt("id"));
                 user.setRole(Role.getByCode(resultSet.getInt("role")));
                 user.setLogin(login);
             }
-            debugLog.debug("we return user");
             return user;
         } catch (SQLException e) {
-            debugLog.debug("error" + e);
             throw new DaoException(e);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
@@ -151,7 +179,8 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             }
             randomGeneratedLogin += k;
         }
-        PreparedStatement statement;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.prepareStatement(CREATE);
             statement.setString(1, randomGeneratedLogin);
@@ -160,22 +189,29 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             if (statement.executeUpdate() < 0) {
                 return null;
             }
-            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
             return null;
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     private User findByLogin(String login) throws DaoException {
-        PreparedStatement statement;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.prepareStatement(SELECT_LOGIN);
             statement.setString(1, login);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             User user = null;
             if (resultSet.next()) {
                 user = new User();
@@ -185,6 +221,12 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             return user;
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 

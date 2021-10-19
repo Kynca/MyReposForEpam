@@ -17,8 +17,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class UserServiceImpl extends BaseService implements UserService {
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger serviceLog = LogManager.getLogger("ServiceLog");
 
+    //TODO invoke
     @Override
     public boolean registration(User user) throws ServiceException {
         if (user != null) {
@@ -38,26 +39,22 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public User login(String login, String password) throws ServiceException {
-        debugLog.debug("in service");
         User user = null;
         if (login != null && password != null) {
             try {
-                debugLog.debug("in service1");
                 UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
                 transaction.init(userDao);
-                debugLog.debug("service done0");
                 user = userDao.findByLoginPass(login, password);
             } catch (DaoException e) {
-                debugLog.debug("error in service");
                 throw new ServiceException(e);
             } finally {
                 transaction.endTransaction();
             }
         }
-        debugLog.debug("service done");
         return user;
     }
 
+    //TODO invoke
     @Override
     public boolean changePass(String login, String password, String newPassword) throws ServiceException {
         if (login != null && password != null && newPassword != null) {
@@ -84,33 +81,31 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public boolean deleteUser(Integer id) throws ServiceException {
-        debugLog.debug("in service delete" + id);
+        serviceLog.info("id = " + id);
         UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
         StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(userDao, studentDao, documentDao);
-        debugLog.debug("init transaction");
-        if(id == null){
+        if (id == null || id < 0) {
+            serviceLog.info("incorrect id");
             return false;
         }
         try {
             User user = userDao.findById(id);
-            if(user == null || user.getRole() == Role.ADMINISTRATOR){
+            if (user == null || user.getRole() == Role.ADMINISTRATOR) {
+                serviceLog.info(" user is null or administrator");
                 return false;
             }
             List<Document> documents = documentDao.findByUserId(id);
             if (documents.size() > 0) {
-                    if (!documentDao.deleteUserReferences(id)) {
-                        debugLog.debug("cannot update doc ");
-                        return false;
-                    }
+                if (!documentDao.deleteUserReferences(id)) {
+                    serviceLog.info("cannot delete references in user's documents");
+                    return false;
+                }
             }
-            debugLog.debug("checked documents");
             if (studentDao.findById(id) == null || studentDao.delete(id)) {
-                debugLog.debug("deleted student");
                 return userDao.delete(id);
             }
-
             transaction.rollback();
             return false;
         } catch (DaoException e) {
@@ -139,9 +134,10 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
         transaction.init(userDao);
         try {
-            if (id != null) {
+            if (id != null && id > 0) {
                 return userDao.findById(id);
             } else {
+                serviceLog.info("incorrect id");
                 return null;
             }
         } catch (DaoException e) {
@@ -153,13 +149,12 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public boolean updateUser(User user) throws ServiceException {
-        debugLog.debug("in user service update " + user);
         if (user != null && user.getId() != null && user.getRole() != null && user.getRole() != Role.ADMINISTRATOR && user.getLogin() != null) {
             UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
             transaction.init(userDao);
-            debugLog.debug("init transaction");
             try {
-                if(userDao.findById(user.getId()) == user){
+                if (userDao.findById(user.getId()) == user) {
+                    serviceLog.info("same user for update in db");
                     return true;
                 }
                 return userDao.update(user);
@@ -170,7 +165,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                 transaction.endTransaction();
             }
         } else {
-            debugLog.debug("not updated");
+            serviceLog.info("incorrect user");
             return false;
         }
     }

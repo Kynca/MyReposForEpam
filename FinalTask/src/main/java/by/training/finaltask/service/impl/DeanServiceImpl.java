@@ -19,12 +19,13 @@ import java.util.Map;
 
 public class DeanServiceImpl extends BaseService implements DeanService {
 
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger serviceLog = LogManager.getLogger("ServiceLog");
 
     @Override
     public boolean deleteDean(Integer id) throws ServiceException {
         DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
         transaction.init(deanDao);
+        serviceLog.info("id = " + id);
         try {
             if (id != null && id > 0) {
                 Dean dean = deanDao.findById(id);
@@ -44,10 +45,12 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
     @Override
     public boolean updateDean(Dean dean) throws ServiceException {
+        serviceLog.info("get Dean for update = " + dean);
         DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
         UniversityDao universityDao = DaoFactory.getInstance().getUniversityDao();
         transaction.init(deanDao);
         if (dean != null && check(dean, universityDao)) {
+            serviceLog.info("dean checked");
             try {
                 return deanDao.update(dean);
             } catch (DaoException e) {
@@ -62,11 +65,10 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
     @Override
     public boolean create(Dean dean) throws ServiceException {
-        debugLog.debug("in create");
+        dean.setId(0);
         DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
         UniversityDaoImpl universityDao = DaoFactory.getInstance().getUniversityDao();
         transaction.init(deanDao, universityDao);
-        debugLog.debug("init transaction");
         if (dean != null && check(dean, universityDao)) {
             try {
                 return deanDao.create(dean);
@@ -111,6 +113,7 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
     @Override
     public Map<Dean, List<University>> findDeanUniversities(Integer id) throws ServiceException {
+        serviceLog.info("id = " + id);
         if (id != null && id > 0) {
             DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
             UniversityDaoImpl universityDao = DaoFactory.getInstance().getUniversityDao();
@@ -123,6 +126,7 @@ public class DeanServiceImpl extends BaseService implements DeanService {
                     map.put(dean, universities);
                     return map;
                 } else {
+                    serviceLog.info("dean = null");
                     transaction.rollback();
                     return null;
                 }
@@ -147,27 +151,29 @@ public class DeanServiceImpl extends BaseService implements DeanService {
     }
 
     private boolean check(Dean dean, UniversityDao universityDao) throws ServiceException {
-        debugLog.debug("checking dean");
+        serviceLog.debug("check");
+
         Integer id = dean.getId();
         Long number = dean.getPhoneNumber();
         int length = String.valueOf(number).length();
         String address = dean.getAddress();
         Integer universityId = dean.getUniversityId();
 
-        debugLog.debug(id + " " + length + " " + address, " " + universityId);
+        serviceLog.debug(id + " " + length + " " + address, " " + universityId);
 
         if (address == null || !(length >= 10 && length <= 13) || dean.getFaculty() == null || id == null) {
             return false;
         }
-        debugLog.debug("check 1 pass");
+        serviceLog.debug("check 1 pass");
         try {
             if (universityId == null || universityDao.findById(universityId) == null) {
                 return false;
             }
-            debugLog.debug("check 2 pass");
+            serviceLog.debug("check 2 pass");
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
+        serviceLog.info("dean checked and meet to condition");
         return true;
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class StudentDaoImpl extends BaseDao implements StudentDao {
 
-    private final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger daoLog = LogManager.getLogger(StudentDao.class.getName());
 
     private static final String SELECT = "SELECT user_id, name, lastname, patronymic, birthdate, mail, dean_id " +
             "FROM student INNER JOIN program_user u ON student.user_id = u.id WHERE dean_id IS NOT NULL AND role NOT LIKE 0 ORDER BY user_id";
@@ -29,58 +29,66 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
 
     @Override
     public List<Student> findAll() throws DaoException {
-        Statement statement;
+        Statement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.createStatement();
-            debugLog.debug("created connection");
             List<Student> students = new ArrayList<>();
-            ResultSet resultSet = statement.executeQuery(SELECT);
-            debugLog.debug("created result set");
+            resultSet = statement.executeQuery(SELECT);
             while (resultSet.next()) {
                 students.add(setStudent(resultSet));
             }
             return students;
         } catch (SQLException e) {
-            debugLog.debug(e.getMessage() + e);
             throw new DaoException(e);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public Student findById(Integer id) throws DaoException {
-        PreparedStatement statement;
-        debugLog.debug(id);
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.prepareStatement(SELECT_BY_ID);
-            debugLog.debug("prepared statement");
             statement.setInt(1, id);
-            debugLog.debug("seted id");
             Student student = null;
-            ResultSet resultSet = statement.executeQuery();
-            debugLog.debug("prepared result set");
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 student = setStudent(resultSet);
             }
             return student;
         } catch (SQLException e) {
-            debugLog.debug("cannot find user" + e);
             throw new DaoException(e);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public boolean delete(Integer id) throws DaoException {
-        PreparedStatement statement;
-        debugLog.debug("in delete student = " + id);
+        PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(DELETE);
             statement.setInt(1, id);
-            debugLog.debug("in the end of student delete");
             int rows = statement.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
-            debugLog.debug(e + e.getMessage() + "exception in sql");
             throw new DaoException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
@@ -100,6 +108,11 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
             return rows > 0;
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
@@ -124,23 +137,35 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
             return rows > 0;
         } catch (SQLException e) {
             throw new DaoException(e);
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
     @Override
     public List<Student> findDeanStudent(Integer deanId) throws DaoException {
-        PreparedStatement statement;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             statement = connection.prepareStatement(SELECT_BY_DEAN);
             statement.setInt(1, deanId);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             List<Student> students = new ArrayList<>();
             while (resultSet.next()) {
-               students.add(setStudent(resultSet));
+                students.add(setStudent(resultSet));
             }
             return students;
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
+        } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
         }
     }
 
@@ -153,6 +178,7 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
         student.setDate(String.valueOf(resultSet.getDate("birthdate")));
         student.setMail(resultSet.getString("mail"));
         student.setDeanId(resultSet.getInt("dean_id"));
+        daoLog.info(student + " added");
         return student;
     }
 }

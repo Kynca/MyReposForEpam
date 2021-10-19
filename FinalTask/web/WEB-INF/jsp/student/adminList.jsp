@@ -4,41 +4,47 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<tag:html title="Dean list">
+<tag:html title="Student list">
     <tag:menu/>
-    <h2><fmt:message key="deanList"/></h2>
+    <h2><fmt:message key="students"/></h2>
     <table class="table table-bordered">
         <thead>
         <tr>
             <th><fmt:message key="id"/></th>
-            <th><fmt:message key="faculty"/></th>
-            <th><fmt:message key="phoneNumber"/></th>
-            <th><fmt:message key="address"/></th>
+            <th><fmt:message key="name"/></th>
+            <th><fmt:message key="secondName"/></th>
+            <th><fmt:message key="Patronymic"/></th>
+            <th><fmt:message key="birthDate"/></th>
+            <th><fmt:message key="mail"/></th>
             <th><fmt:message key="university"/></th>
+            <th><fmt:message key="dean"/></th>
+
         </tr>
-        <c:forEach items="${deans}" var="item">
+        <c:forEach items="${studentsInfo}" var="item">
         <tr>
-            <th>${item.id}</th>
-            <th>${item.faculty}</th>
-            <th>${item.phoneNumber}</th>
-            <th>${item.address}</th>
-            <th>${item.universityName}</th>
+            <th>${item.key.id}</th>
+            <th>${item.key.name}</th>
+            <th>${item.key.lastname}</th>
+            <th>${item.key.patronymic}</th>
+            <th>${item.key.date}</th>
+            <th>${item.key.mail}</th>
+            <th>${item.value.universityName}</th>
+            <th>${item.value.faculty}</th>
         </tr>
         </c:forEach>
     </table>
 
-    <c:url value="/dean/process.html" var="process"/>
+    <c:url value="/student/process.html" var="process"/>
+
 
     <form action="${process}" method="post">
-        <label for="id">Id</label>
-        <input id="id" required="required" type="text" name="id"><br>
+        <input required="required" type="text" name="id"><br>
         <input type="radio" id="edit" name="action" value="false" required="required">
         <label for="edit"><fmt:message key="edit"/></label><br>
         <input type="radio" id="delete" name="action" value="true">
         <label for="delete"><fmt:message key="delete"/></label><br>
-        <button type="submit"><fmt:message key="send"/></button>
+        <input type="submit">
     </form>
-
     <c:if test="${not empty incorrectData}">
         <div class="container mt-3">
         <div class="toast show">
@@ -51,8 +57,5 @@
             </div>
         </div>
     </c:if>
-
-    <c:url value="/dean/find/uni.html" var="findUni"/>
-    <a href="${findUni}" class="btn"><fmt:message key="create"/></a>
 
 </tag:html>

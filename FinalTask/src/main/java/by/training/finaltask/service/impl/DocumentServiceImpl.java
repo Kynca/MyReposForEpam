@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class DocumentServiceImpl extends BaseService implements DocumentService {
-    private static final Logger debugLog = LogManager.getLogger("DebugLog");
+    private static final Logger serviceLog = LogManager.getLogger("ServiceLog");
 
     @Override
     public Document viewDocument(Integer id) throws ServiceException {
         if (id != null && id > 0) {
+            serviceLog.info("id = " + id);
             DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
             transaction.init(documentDao);
             try {
@@ -34,22 +35,21 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
                 transaction.endTransaction();
             }
         } else {
-            //logger
+            serviceLog.info("incorrect id");
             return null;
         }
     }
 
     @Override
     public List<Document> viewDocuments(Integer id, boolean isDean) throws ServiceException {
-        debugLog.debug("in service" + isDean);
+        serviceLog.debug("is dean request =" + isDean + " id = " + id);
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(documentDao);
-        debugLog.debug("init Transaction");
         List<Document> documents = new ArrayList<>();
         try {
-            if (id != null) {
+            if (id != null || id > 0) {
+                serviceLog.info("correct id");
                 if (isDean) {
-                    debugLog.debug("in find id");
                     documents = documentDao.findByDeanId(id);
                 } else {
                     documents = documentDao.findByUserId(id);
@@ -65,20 +65,21 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
 
     @Override
     public boolean addFile(String filepath, Integer id) throws ServiceException {
-        debugLog.debug("in add file service" + id + filepath);
+        serviceLog.info("in add file service id = " + id + " filepath = " + filepath);
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
         transaction.init(documentDao);
         try {
-            if (id == null){
+            if (id == null || id < 0){
+                serviceLog.info("incorrect id");
                 return false;
             }
             Document document = documentDao.findById(id);
-            debugLog.debug("doc founded" + document);
-            if (document != null && !filepath.isEmpty() && document.getDocumentPath().isEmpty()) {
-                debugLog.debug("setting path");
+            if (document != null && !filepath.isEmpty() && document.getDocumentPath() == null) {
+                serviceLog.info("founded document is ready to add path");
                 document.setDocumentPath(filepath);
                 return documentDao.update(document);
             } else {
+                serviceLog.info("founded document is already setted");
                 transaction.rollback();
                 return false;
             }
@@ -105,22 +106,20 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
 
     @Override
     public boolean createDocument(Document document) throws ServiceException {
-        debugLog.debug("in service" + document);
+        serviceLog.info("document to create = " + document);
         if (document != null && document.getDeliveryType() != null && document.getTypeId() != null) {
             if (document.getReceiverMail() != null && !document.getReceiverMail().isEmpty()) {
                 Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:.[a-zA-Z0-9_+&*-]" +
                         "+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}");
-                debugLog.debug(document.getReceiverMail());
                 boolean result = pattern.matcher(document.getReceiverMail()).matches();
-                debugLog.debug(result);
                 if (!result) {
-                    debugLog.debug("mail don't match");
+                    serviceLog.debug("mail don't match");
                     return false;
                 }
             }
+            serviceLog.info("document is correct");
             DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
             transaction.init(documentDao);
-            debugLog.debug("init transaction");
             try {
                 return documentDao.create(document);
             } catch (DaoException e) {
@@ -130,6 +129,7 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
                 transaction.endTransaction();
             }
         } else {
+            serviceLog.info("incorrect document");
             return false;
         }
     }

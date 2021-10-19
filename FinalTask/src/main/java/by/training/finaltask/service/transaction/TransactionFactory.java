@@ -14,8 +14,7 @@ public class TransactionFactory {
         try {
             connection.setAutoCommit(false);
         } catch (SQLException throwables) {
-            //logger
-            throw new DaoException(throwables);
+            throw new DaoException("It is impossible to turn off autocommiting for database connection" ,throwables);
         }
     }
 
@@ -27,7 +26,7 @@ public class TransactionFactory {
         try {
             connection.close();
         } catch (SQLException throwables) {
-            throw new DaoException(throwables);
+            throw new DaoException("impossible to close transaction" ,throwables);
         }
     }
 }

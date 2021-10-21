@@ -15,9 +15,6 @@
         <File name="ControllerLog" fileName="logs/controller.log" bufferedIO="true">
             <PatternLayout pattern="${pattern}" />
         </File>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </Console>
     </Appenders>
     <Loggers>
         <Root level="info">

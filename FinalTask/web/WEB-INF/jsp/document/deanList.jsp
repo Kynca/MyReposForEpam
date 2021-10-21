@@ -6,7 +6,7 @@
 
 <tag:html title="Student documents">
     <tag:menu/>
-    <div class="container">
+    <div class="inner">
         <table class="table table-bordered">
             <thead>
             <tr>

@@ -7,6 +7,7 @@
 <tag:html title="Student list">
     <tag:menu/>
     <h2><fmt:message key="students"/></h2>
+    <div class="inner">
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -16,8 +17,8 @@
             <th><fmt:message key="Patronymic"/></th>
             <th><fmt:message key="birthDate"/></th>
             <th><fmt:message key="mail"/></th>
-
         </tr>
+        </thead>
         <c:forEach items="${students}" var="item">
         <tr>
             <th>${item.id}</th>
@@ -29,7 +30,7 @@
         </tr>
         </c:forEach>
     </table>
-
+    </div>
 <%--    <c:url value="/student/process.html" var="process"/>--%>
 
 

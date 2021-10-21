@@ -7,6 +7,7 @@
 <tag:html title="Dean list">
     <tag:menu/>
     <h2><fmt:message key="deanList"/></h2>
+    <div class="inner">
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -16,6 +17,7 @@
             <th><fmt:message key="address"/></th>
             <th><fmt:message key="university"/></th>
         </tr>
+        </thead>
         <c:forEach items="${deans}" var="item">
         <tr>
             <th>${item.id}</th>
@@ -26,7 +28,7 @@
         </tr>
         </c:forEach>
     </table>
-
+    </div>
     <c:url value="/dean/process.html" var="process"/>
 
     <form action="${process}" method="post">

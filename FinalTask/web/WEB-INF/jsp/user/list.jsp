@@ -7,8 +7,7 @@
 <tag:html title="User list">
     <tag:menu/>
     <h2><fmt:message key="userList"/></h2>
-
-
+    <div class="inner">
             <table class="table table-bordered" id="table_id">
                 <thead>
                 <tr>
@@ -25,6 +24,7 @@
                 </tr>
     </c:forEach>
             </table>
+    </div>
 
     <c:url value="/user/process.html" var="process"/>
 

@@ -8,6 +8,7 @@
     <tag:menu/>
     <c:choose>
         <c:when test="${not empty marks}">
+            <div class="inner">
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -15,6 +16,7 @@
                     <th><fmt:message key="marks"/></th>
                     <th><fmt:message key="markDate"/></th>
                 </tr>
+                </thead>
                 <c:forEach items="${marks}" var="item">
                     <tr>
                         <th>${item.subjectName}</th>
@@ -22,8 +24,8 @@
                         <th>${item.date}</th>
                     </tr>
                 </c:forEach>
-                </thead>
             </table>
+            </div>
         </c:when>
         <c:otherwise>
             <fmt:message key = "nothingFounded"/>

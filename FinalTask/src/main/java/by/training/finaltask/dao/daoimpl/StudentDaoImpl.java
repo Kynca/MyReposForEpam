@@ -2,8 +2,8 @@ package by.training.finaltask.dao.daoimpl;
 
 import by.training.finaltask.bean.entities.Student;
 import by.training.finaltask.dao.StudentDao;
-import by.training.finaltask.dao.connectionpool.ConnectionPool;
 import by.training.finaltask.dao.exception.DaoException;
+import by.training.finaltask.service.excpetion.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,6 +26,7 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
             "VALUES (?,?,?,?,?,?,?)";
     private static final String UPDATE = "UPDATE student SET name = ?,lastname = ?, patronymic =?, mail = ?,dean_id =? "
             + "WHERE user_id = ?";
+    private static final String IS_UNIQUE_MAIL = "SELECT user_id FROM student WHERE mail = ?";
 
     @Override
     public List<Student> findAll() throws DaoException {
@@ -161,6 +162,26 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
         } finally {
+            try {
+                resultSet.close();
+                statement.close();
+            } catch (SQLException | NullPointerException throwables) {
+            }
+        }
+    }
+
+    @Override
+    public boolean isUniqueMail(String mail) throws ServiceException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try{
+            statement = connection.prepareStatement(IS_UNIQUE_MAIL);
+            statement.setString(1, mail);
+            resultSet = statement.executeQuery();
+            return !resultSet.next();
+        } catch (SQLException throwables) {
+            throw new ServiceException(throwables);
+        }finally {
             try {
                 resultSet.close();
                 statement.close();

@@ -30,7 +30,15 @@
                     <label for="mail"><fmt:message key="mail"/></label>
                     <input id="mail" type="email" name="mail" required value="${student.mail}">
                 </div>
-                <div class="form-group">
+                <c:choose>
+                    <c:when test="${authorizedUser.role.value == 0}">
+                        <c:set var="display" value="required"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="display" value="hidden"/>
+                    </c:otherwise>
+                </c:choose>
+                <div class="form-group" ${display}>
                     <label for="dean"><fmt:message key="deanId"/></label>
                     <input id="dean" type="text" name="deanId" required value="${student.deanId}">
                 </div>

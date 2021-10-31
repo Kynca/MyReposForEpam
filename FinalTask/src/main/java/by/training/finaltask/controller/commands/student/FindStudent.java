@@ -41,17 +41,34 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
                     controllerLog.info("student founded and =" + student);
                     request.setAttribute("student", student);
                     break;
-                case STUDENT, DEAN:
+                case STUDENT:
                     result = new Result(Page.VIEW_DEAN_INFO, true);
                     id = user.getId();
                     student = studentService.viewInfo(id, false);
-                    controllerLog.info("student founded and =" + student);
+                    controllerLog.info("student founded and = " + student);
                     if (student == null) {
                         if (user.getRole() == Role.STUDENT) {
                             return new Result(Page.LOGIN_FORM, true);
                         }
                     }
                     request.getSession(false).setAttribute("student", student);
+                    break;
+                case DEAN:
+                    Integer deanId = (Integer) request.getSession(false).getAttribute("deanId");
+                    if (deanId != null) {
+                        controllerLog.info("deanId != null");
+                        id = (Integer) request.getSession(false).getAttribute("id");
+                        student = studentService.viewInfo(id, false);
+                        request.setAttribute("student", student);
+                        result = new Result(Page.STUDENT_EDIT_JSP, false);
+                    } else {
+                        controllerLog.info("deanId == null");
+                        id = user.getId();
+                        student = studentService.viewInfo(id, false);
+                        controllerLog.info("student founded and = " + student);
+                        request.getSession(false).setAttribute("student", student);
+                        result = new Result(Page.VIEW_DEAN_INFO, true);
+                    }
                     break;
                 default:
                     return new Result(Page.LOGIN_FORM, true);

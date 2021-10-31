@@ -10,27 +10,30 @@
             <form method="post" action="${create}">
                 <div class="form-group">
                     <label for="name"><fmt:message key="name"/></label>
-                    <input id="name" type="text" name="name" required value="${student.name}">
+                    <input id="name" type="text" name="name" required >
                 </div>
                 <div class="form-group">
                     <label for="lastname"><fmt:message key="secondName"/></label>
-                    <input id="lastname" type="text" name="lastname" required value="${student.lastname}">
+                    <input id="lastname" type="text" name="lastname" required>
                 </div>
                 <div class="form-group">
                     <label for="patronymic"><fmt:message key="Patronymic"/></label>
-                    <input id="patronymic" type="text" name="patronymic" required value="${student.patronymic}">
+                    <input id="patronymic" type="text" name="patronymic" required>
+                </div>
+                <div class="form-group">
+                    <label for="login"><fmt:message key="userLogin"/></label>
+                    <input id="login" type="text" name="login" required>
                 </div>
                 <div class="form-group">
                     <label for="birthDate"><fmt:message key="birthDate"/></label>
-                    <input id="birthDate" type="text" name="date" required value="${student.date}">
+                    <input id="birthDate" type="text" name="date" required>
                 </div>
                 <div class="form-group">
                     <label for="mail"><fmt:message key="mail"/></label>
-                    <input id="mail" type="email" name="mail" required value="${student.mail}">
+                    <input id="mail" type="email" name="mail" required>
                 </div>
-                <div class="form-group">
-                    <label for="dean"><fmt:message key="deanId"/></label>
-                    <input id="dean" type="text" name="deanId" required value="${student.deanId}">
+                <div class="form-group" hidden>
+                    <input id="dean" type="text" name="deanId" required value="${sessionScope.deanId}">
                 </div>
                 <div class="form-group">
                     <button type="submit"><fmt:message key="create"/></button>

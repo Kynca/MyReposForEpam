@@ -29,7 +29,7 @@ public class ViewDeanInfo implements StudentCommand, DeanCommand {
         controllerLog.debug("in viewDean");
         Student student = (Student) request.getSession(false).getAttribute("student");
         request.getSession().removeAttribute("student");
-        controllerLog.debug("get student = " + student);
+        controllerLog.info("get student = " + student);
         Integer id = student.getDeanId();
         request.getSession(false).setAttribute("deanId", id);
         try {

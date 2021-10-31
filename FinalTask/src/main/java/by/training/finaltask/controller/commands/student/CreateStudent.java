@@ -1,7 +1,9 @@
 package by.training.finaltask.controller.commands.student;
 
 import by.training.finaltask.bean.Result;
+import by.training.finaltask.bean.entities.Role;
 import by.training.finaltask.bean.entities.Student;
+import by.training.finaltask.bean.entities.User;
 import by.training.finaltask.bean.page.Page;
 import by.training.finaltask.controller.DeanCommand;
 import by.training.finaltask.service.ServiceFactory;
@@ -27,15 +29,19 @@ public class CreateStudent implements DeanCommand {
         String date = request.getParameter("date");
         String mail = request.getParameter("mail");
         Integer deanId = (Integer) request.getSession(false).getAttribute("deanId");
+        String login = request.getParameter("login");
 
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
             Student student = new Student(name, lastname, patronymic, date, mail, deanId);
-            if (studentService.createStudent(student)) {
+            User user = new User();
+            user.setRole(Role.STUDENT);
+            user.setLogin(login);
+            if (studentService.createStudent(student, user)) {
                 return new Result(Page.STUDENT_LIST_HTML, true);
             } else {
                 request.getSession(false).setAttribute("incorrectData", "incorrectData");
-                return new Result(Page.STUDENT_CREATE, true);
+                return new Result(Page.STUDENT_CREATE_FORM, true);
             }
         } catch (ServiceException e) {
             controllerLog.error(e + e.getMessage());

@@ -21,26 +21,6 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
     private static final Logger serviceLog = LogManager.getLogger("ServiceLog");
 
     @Override
-    public Document viewDocument(Integer id) throws ServiceException {
-        if (id != null && id > 0) {
-            serviceLog.info("id = " + id);
-            DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
-            transaction.init(documentDao);
-            try {
-                Document document = documentDao.findById(id);
-                return document;
-            } catch (DaoException e) {
-                throw new ServiceException(e);
-            } finally {
-                transaction.endTransaction();
-            }
-        } else {
-            serviceLog.info("incorrect id");
-            return null;
-        }
-    }
-
-    @Override
     public List<Document> viewDocuments(Integer id, boolean isDean) throws ServiceException {
         serviceLog.debug("is dean request =" + isDean + " id = " + id);
         DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
@@ -85,19 +65,6 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
             }
         } catch (DaoException e) {
             transaction.rollback();
-            throw new ServiceException(e);
-        } finally {
-            transaction.endTransaction();
-        }
-    }
-
-    @Override
-    public boolean deleteDocument(Integer id) throws ServiceException {
-        DocumentDaoImpl documentDao = DaoFactory.getInstance().getDocumentDao();
-        transaction.init(documentDao);
-        try {
-            return documentDao.delete(id);
-        } catch (DaoException e) {
             throw new ServiceException(e);
         } finally {
             transaction.endTransaction();

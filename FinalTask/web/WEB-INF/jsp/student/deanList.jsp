@@ -31,28 +31,31 @@
         </c:forEach>
     </table>
     </div>
-<%--    <c:url value="/student/process.html" var="process"/>--%>
+    <c:url value="/student/process.html" var="process"/>
 
+    <form action="${process}" method="post">
+        <input required="required" type="text" name="id"><br>
+        <input type="radio" id="edit" name="action" value="false" required="required">
+        <label for="edit"><fmt:message key="edit"/></label><br>
+        <input type="radio" id="delete" name="action" value="true">
+        <label for="delete"><fmt:message key="delete"/></label><br>
+        <input type="submit">
+    </form>
 
-<%--    <form action="${process}" method="post">--%>
-<%--        <input required="required" type="text" name="id"><br>--%>
-<%--        <input type="radio" id="edit" name="action" value="false" required="required">--%>
-<%--        <label for="edit"><fmt:message key="edit"/></label><br>--%>
-<%--        <input type="radio" id="delete" name="action" value="true">--%>
-<%--        <label for="delete"><fmt:message key="delete"/></label><br>--%>
-<%--        <input type="submit">--%>
-<%--    </form>--%>
-<%--    <c:if test="${not empty incorrectData}">--%>
-<%--        <div class="container mt-3">--%>
-<%--        <div class="toast show">--%>
-<%--            <div class="toast-header">--%>
-<%--                <strong class="me-auto">Toast Header</strong>--%>
-<%--                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>--%>
-<%--            </div>--%>
-<%--            <div class="toast-body">--%>
-<%--                <p class="text-danger"><fmt:message key="incorrectData"/></p>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </c:if>--%>
+    <c:url value="/student/create/form.html" var="create"/>
+    <a href="${create}" class="btn"><fmt:message key="create"/></a>
+
+    <c:if test="${not empty incorrectData}">
+        <div class="container mt-3">
+        <div class="toast show">
+            <div class="toast-header">
+                <strong class="me-auto">Toast Header</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                <p class="text-danger"><fmt:message key="incorrectData"/></p>
+            </div>
+        </div>
+    </c:if>
 
 </tag:html>

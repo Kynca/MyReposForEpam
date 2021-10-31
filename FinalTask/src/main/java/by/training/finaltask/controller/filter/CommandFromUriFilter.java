@@ -44,6 +44,7 @@ public class CommandFromUriFilter implements Filter {
         repository.put("/student/find", new FindStudent());
         repository.put("/student/edit", new EditStudent());
         repository.put("/student/create", new CreateStudent());
+        repository.put("/student/create/form", new CreateForm());
 
         repository.put("/user/list", new ViewUsers());
         repository.put("/user/process", new ProcessUser());

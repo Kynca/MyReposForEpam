@@ -10,9 +10,9 @@ import java.util.Map;
 
 public interface StudentService {
     Student viewInfo(Integer id, boolean isAdmin) throws ServiceException;
-    boolean updateInfo(Student student) throws ServiceException;
+    boolean updateInfo(Student student, boolean iseDean) throws ServiceException;
     List<Student> viewDeanStudents(Integer id) throws ServiceException;
     Map<Student, Dean> viewStudentsInfo() throws ServiceException;
-    boolean createStudent(Student student) throws ServiceException;
-    boolean deleteStudent(Integer id) throws ServiceException;
+    boolean createStudent(Student student, User user) throws ServiceException;
+    boolean deleteStudent(Integer id, Integer deanId) throws ServiceException;
 }

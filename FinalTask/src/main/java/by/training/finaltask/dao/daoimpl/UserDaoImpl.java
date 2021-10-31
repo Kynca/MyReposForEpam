@@ -95,17 +95,33 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public boolean create(User user) throws DaoException {
+    public boolean create(User entity) throws DaoException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Integer createUser(User user) throws DaoException {
         daoLog.info(user + " to create");
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(CREATE);
+            statement = connection.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getLogin());
-            statement.setInt(2, user.getRole().getValue());
+            statement.setString(2, "randomPass");
             statement.setInt(3, user.getRole().getValue());
-            int rows = statement.executeUpdate();
-            return rows > 0;
+
+            statement.executeUpdate();
+            daoLog.info("student created");
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                daoLog.info("id = " + id);
+                return id;
+            }
+            return null;
         } catch (SQLException e) {
+            daoLog.info("in dao error" + e);
             throw new DaoException(e);
         } finally {
             try {
@@ -119,16 +135,12 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     public boolean update(User user) throws DaoException {
         PreparedStatement statement = null;
         try {
-            User user1 = findByLogin(user.getLogin());
-            if (user1 == null || !user1.getLogin().equals(user.getLogin()) || user1.getId().equals(user.getId())) {
-                statement = connection.prepareStatement(UPDATE);
-                statement.setString(1, user.getLogin());
-                statement.setInt(2, user.getRole().getValue());
-                statement.setInt(3, user.getId());
-                return statement.executeUpdate() > 0;
-            } else {
-                return false;
-            }
+            statement = connection.prepareStatement(UPDATE);
+            statement.setString(1, user.getLogin());
+            statement.setInt(2, user.getRole().getValue());
+            statement.setInt(3, user.getId());
+            return statement.executeUpdate() > 0;
+
         } catch (SQLException e) {
             throw new DaoException(e);
         } finally {
@@ -144,7 +156,6 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            DatabaseMetaData metaData = connection.getMetaData();
             statement = connection.prepareStatement(SELECT_LOGIN_PASS);
             statement.setString(1, login);
             statement.setString(2, pass);
@@ -169,43 +180,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public Integer createGeneratedUser(String name, String lastname) throws DaoException {
-        String randomGeneratedLogin = name + lastname;
-
-        if (findByLogin(randomGeneratedLogin) != null) {
-            int k = 0;
-            while (findByLogin(randomGeneratedLogin + k) == null) {
-                k++;
-            }
-            randomGeneratedLogin += k;
-        }
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            statement = connection.prepareStatement(CREATE);
-            statement.setString(1, randomGeneratedLogin);
-            statement.setString(2, "randomPass");
-            statement.setInt(3, Role.STUDENT.getValue());
-            if (statement.executeUpdate() < 0) {
-                return null;
-            }
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                return resultSet.getInt(1);
-            }
-            return null;
-        } catch (SQLException throwables) {
-            throw new DaoException(throwables);
-        } finally {
-            try {
-                resultSet.close();
-                statement.close();
-            } catch (SQLException | NullPointerException throwables) {
-            }
-        }
-    }
-
-    private User findByLogin(String login) throws DaoException {
+    public User findByLogin(String login) throws DaoException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {

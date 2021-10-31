@@ -3,7 +3,7 @@ USE document_handler;
 CREATE TABLE program_user
 (
     id       INTEGER     NOT NULL AUTO_INCREMENT,
-    login    VARCHAR(20) NOT NULL UNIQUE,
+    login    VARCHAR(40) NOT NULL UNIQUE,
     password NCHAR(32)   NOT NULL,
     /*
      * 0 - человек с большими правами

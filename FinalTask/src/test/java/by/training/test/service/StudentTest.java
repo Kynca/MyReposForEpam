@@ -90,7 +90,7 @@ public class StudentTest {
 
     @Test(description = "test update student", dataProvider = "update info data")
     public void updateStudentTest(Student student, boolean result) throws ServiceException {
-        assertEquals(studentService.updateInfo(student), result);
+        assertEquals(studentService.updateInfo(student, false), result);
     }
 
     @DataProvider(name =  "delete data")
@@ -107,6 +107,6 @@ public class StudentTest {
 
     @Test(description = " delete student test", dataProvider = "delete data")
     public void deleteTest(Integer id, boolean result) throws ServiceException{
-        assertEquals(studentService.deleteStudent(id), result);
+        assertEquals(studentService.deleteStudent(id, null), result);
     }
 }

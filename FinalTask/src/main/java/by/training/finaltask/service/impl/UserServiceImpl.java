@@ -19,24 +19,6 @@ import java.util.List;
 public class UserServiceImpl extends BaseService implements UserService {
     private static final Logger serviceLog = LogManager.getLogger("ServiceLog");
 
-    //TODO invoke
-    @Override
-    public boolean registration(User user) throws ServiceException {
-        if (user != null) {
-            try {
-                UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
-                transaction.init(userDao);
-                return userDao.create(user);
-            } catch (DaoException e) {
-                transaction.rollback();
-                throw new ServiceException();
-            } finally {
-                transaction.endTransaction();
-            }
-        }
-        return false;
-    }
-
     @Override
     public User login(String login, String password) throws ServiceException {
         User user = null;
@@ -52,31 +34,6 @@ public class UserServiceImpl extends BaseService implements UserService {
             }
         }
         return user;
-    }
-
-    //TODO invoke
-    @Override
-    public boolean changePass(String login, String password, String newPassword) throws ServiceException {
-        if (login != null && password != null && newPassword != null) {
-            UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
-            transaction.init(userDao);
-            try {
-                User user = userDao.findByLoginPass(login, password);
-                if (user != null) {
-                    return userDao.update(user);
-                } else {
-                    return false;
-                }
-            } catch (DaoException e) {
-                transaction.rollback();
-                throw new ServiceException(e);
-            } finally {
-                transaction.endTransaction();
-            }
-        } else {
-            //TODO log
-            return false;
-        }
     }
 
     @Override

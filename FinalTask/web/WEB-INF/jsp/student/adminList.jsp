@@ -38,7 +38,6 @@
 
     <c:url value="/student/process.html" var="process"/>
 
-
     <form action="${process}" method="post">
         <input required="required" type="text" name="id"><br>
         <input type="radio" id="edit" name="action" value="false" required="required">

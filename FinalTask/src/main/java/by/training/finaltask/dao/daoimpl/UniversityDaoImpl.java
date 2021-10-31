@@ -2,7 +2,6 @@ package by.training.finaltask.dao.daoimpl;
 
 import by.training.finaltask.bean.entities.University;
 import by.training.finaltask.dao.UniversityDao;
-import by.training.finaltask.dao.connectionpool.ConnectionPool;
 import by.training.finaltask.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

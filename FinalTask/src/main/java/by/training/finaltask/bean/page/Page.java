@@ -16,6 +16,7 @@ public enum Page {
     STUDENT_EDIT_HTML("/student/edit.html"),
     STUDENT_FIND("/student/find.html"),
     STUDENT_CREATE("/student/create.jsp"),
+    STUDENT_CREATE_FORM("/student/create/form.html"),
 
     USER_FIND("/user/find.html"),
     USER_LIST_HTML("/user/list.html"),

@@ -30,8 +30,9 @@ public class ProcessStudent implements AdminCommand, DeanCommand {
         request.getSession(false).removeAttribute("incorrectData");
         User user = (User) request.getSession().getAttribute("authorizedUser");
         Integer deanId = null;
+        Integer id = null;
         try {
-            Integer id = Integer.valueOf(request.getParameter("id"));
+            id = Integer.valueOf(request.getParameter("id"));
             Boolean choice = Boolean.valueOf(request.getParameter("action"));
             controllerLog.info("init" + id + " " + choice);
             if (choice) {
@@ -61,6 +62,10 @@ public class ProcessStudent implements AdminCommand, DeanCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
+        } catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            result = new Result(Page.STUDENT_LIST_HTML, true);
         }
         return result;
     }

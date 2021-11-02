@@ -31,10 +31,14 @@ public class DeanServiceImpl extends BaseService implements DeanService {
                 Dean dean = deanDao.findById(id);
                 if (dean != null) {
                     return deanDao.delete(id);
+                } else {
+                    transaction.rollback();
+                    throw new IllegalArgumentException("dean with" + id + "not found");
                 }
+            } else {
+                transaction.rollback();
+                throw new IllegalArgumentException("incorrect id");
             }
-            transaction.rollback();
-            return false;
         } catch (DaoException e) {
             transaction.rollback();
             throw new ServiceException(e);
@@ -65,7 +69,6 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
     @Override
     public boolean create(Dean dean) throws ServiceException {
-        dean.setId(0);
         DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
         UniversityDaoImpl universityDao = DaoFactory.getInstance().getUniversityDao();
         transaction.init(deanDao, universityDao);
@@ -107,8 +110,9 @@ public class DeanServiceImpl extends BaseService implements DeanService {
             } finally {
                 transaction.endTransaction();
             }
+        }else{
+            throw new IllegalArgumentException("incorrect id");
         }
-        return null;
     }
 
     @Override
@@ -142,10 +146,10 @@ public class DeanServiceImpl extends BaseService implements DeanService {
         UniversityDaoImpl universityDao = DaoFactory.getInstance().getUniversityDao();
         transaction.init(universityDao);
         try {
-           return universityDao.findAll();
+            return universityDao.findAll();
         } catch (DaoException e) {
             throw new ServiceException(e);
-        }finally {
+        } finally {
             transaction.endTransaction();
         }
     }
@@ -161,13 +165,16 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
         serviceLog.debug(id + " " + length + " " + address, " " + universityId);
 
-        if (address == null || !(length >= 10 && length <= 13) || dean.getFaculty() == null || id == null) {
-            return false;
+        if (address == null || dean.getFaculty() == null || id == null) {
+            throw new IllegalArgumentException("incorrect data");
+        }
+        if(!(length >= 10 && length <= 13)){
+            throw new IllegalArgumentException("incorrect phone number");
         }
         serviceLog.debug("check 1 pass");
         try {
             if (universityId == null || universityDao.findById(universityId) == null) {
-                return false;
+                throw new IllegalArgumentException("university not found");
             }
             serviceLog.debug("check 2 pass");
         } catch (DaoException e) {

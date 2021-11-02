@@ -54,9 +54,10 @@ public class Login implements Command {
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
         String login = request.getParameter("login");
         String pass = request.getParameter("password");
-        request.getSession(false).removeAttribute("incorrectData");
+
         if (pass != null && login != null) {
             try {
                 UserServiceImpl userService = ServiceFactory.getInstance().getUserService();
@@ -70,7 +71,8 @@ public class Login implements Command {
                     return new Result(Page.PROFILE_HTML, true);
                 } else {
                     controllerLog.info("can not authorise user");
-                    request.setAttribute("incorrectData", "incorrectData");
+                    request.getSession(false).setAttribute("incorrectData", "user with this login and pass" +
+                            " do not exist");
                     return new Result(Page.LOGIN_FORM, true);
                 }
             } catch (ServiceException e) {

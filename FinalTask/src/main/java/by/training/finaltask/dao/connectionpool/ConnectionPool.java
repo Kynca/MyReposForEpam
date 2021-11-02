@@ -1,6 +1,5 @@
 package by.training.finaltask.dao.connectionpool;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -13,7 +12,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
-import by.training.finaltask.dao.daoimpl.DeanDaoImpl;
 import by.training.finaltask.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +22,8 @@ final public class ConnectionPool {
 
     private final static ReentrantLock locker = new ReentrantLock();
     private final static Properties properties = new Properties();
-    private int maxSize = 50;
-    private int checkConnectionTimeout = 60000;
+    private int maxSize;
+    private final int CHECK_CONNECTION_TIMEOUT = 6000;
 
 
     private BlockingQueue<PooledConnection> freeConnections = new LinkedBlockingQueue<>();
@@ -41,7 +39,7 @@ final public class ConnectionPool {
             try {
                 if (!freeConnections.isEmpty()) {
                     connection = freeConnections.take();
-                    if (!connection.isValid(checkConnectionTimeout)) {
+                    if (!connection.isValid(CHECK_CONNECTION_TIMEOUT)) {
                         try {
                             connection.getConnection().close();
                         } catch (SQLException e) {
@@ -67,7 +65,7 @@ final public class ConnectionPool {
     public void freeConnection(PooledConnection connection) {
         locker.lock();
         try {
-            if (connection.isValid(checkConnectionTimeout)) {
+            if (connection.isValid(CHECK_CONNECTION_TIMEOUT)) {
                 connection.clearWarnings();
                 connection.setAutoCommit(true);
                 usedConnections.remove(connection);
@@ -90,7 +88,8 @@ final public class ConnectionPool {
             InputStream input = classLoader.getResourceAsStream(dbProperties);
             properties.load(input);
             Class.forName(properties.getProperty("db.driver"));
-            for (int counter = 0; counter < Integer.parseInt(properties.getProperty("poolsize")); counter++) {
+            maxSize = Integer.parseInt(properties.getProperty("poolsize"));
+            for (int counter = 0; counter < maxSize; counter++) {
                 freeConnections.put(createConnection());
             }
         } catch (ClassNotFoundException | SQLException | InterruptedException e) {

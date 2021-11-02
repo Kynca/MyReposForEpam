@@ -19,7 +19,6 @@ public class ViewStudentDocuments implements StudentCommand {
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response){
-        request.getSession(false).removeAttribute("incorrectData");
         Integer id = (Integer) request.getAttribute("identity");
         Result result = new Result(Page.DOCUMENT_LIST, false);
         if (id != null) {

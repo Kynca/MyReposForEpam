@@ -13,5 +13,5 @@
         <c:otherwise>Непредвиденная ошибка приложения</c:otherwise>
     </c:choose>
     <c:url value="/.html" var = "homePage"/>
-    <a href="${homePage}"><fmt:message key="returnMainPage"/> </a>
+    <a class="btn" href="${homePage}"><fmt:message key="returnMainPage"/> </a>
 </tag:html>

@@ -25,11 +25,11 @@ public class EditUser implements AdminCommand {
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
         request.getSession(false).removeAttribute("incorrectData");
+        Integer id = Integer.valueOf(request.getParameter("id"));
         try {
             UserService userService = ServiceFactory.getInstance().getUserService();
             String login = request.getParameter("login");
             Role role = Role.getByCode(Integer.valueOf(request.getParameter("role")));
-            Integer id = Integer.valueOf(request.getParameter("id"));
             User user = new User(id, login, role);
             if (userService.updateUser(user)) {
                 result = new Result(Page.USER_LIST_HTML, true);
@@ -42,6 +42,10 @@ public class EditUser implements AdminCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
+        } catch (IllegalArgumentException e) {
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            result = new Result(Page.USER_FIND, true);
         }
         return result;
 

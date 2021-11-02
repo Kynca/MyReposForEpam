@@ -26,9 +26,8 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        Result result;
+        Result result = null;
         Integer id;
-        request.getSession(false).removeAttribute("incorrectData");
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
             User user = (User) request.getSession(false).getAttribute("authorizedUser");
@@ -54,20 +53,20 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
                     request.getSession(false).setAttribute("student", student);
                     break;
                 case DEAN:
+                    result = new Result(Page.STUDENT_EDIT_JSP, false);
                     Integer deanId = (Integer) request.getSession(false).getAttribute("deanId");
                     if (deanId != null) {
                         controllerLog.info("deanId != null");
                         id = (Integer) request.getSession(false).getAttribute("id");
                         student = studentService.viewInfo(id, false);
                         request.setAttribute("student", student);
-                        result = new Result(Page.STUDENT_EDIT_JSP, false);
                     } else {
+                        result = new Result(Page.VIEW_DEAN_INFO, true);
                         controllerLog.info("deanId == null");
                         id = user.getId();
                         student = studentService.viewInfo(id, false);
                         controllerLog.info("student founded and = " + student);
                         request.getSession(false).setAttribute("student", student);
-                        result = new Result(Page.VIEW_DEAN_INFO, true);
                     }
                     break;
                 default:
@@ -77,6 +76,9 @@ public class FindStudent implements AdminCommand, StudentCommand, DeanCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
+        }catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
         }
         return result;
     }

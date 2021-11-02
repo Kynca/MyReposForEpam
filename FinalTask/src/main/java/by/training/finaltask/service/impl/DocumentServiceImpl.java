@@ -51,7 +51,7 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
         try {
             if (id == null || id < 0){
                 serviceLog.info("incorrect id");
-                return false;
+                throw new IllegalArgumentException("incorrect id");
             }
             Document document = documentDao.findById(id);
             if (document != null && !filepath.isEmpty() && document.getDocumentPath() == null) {
@@ -61,7 +61,7 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
             } else {
                 serviceLog.info("founded document is already setted");
                 transaction.rollback();
-                return false;
+                throw new IllegalArgumentException("document not founded");
             }
         } catch (DaoException e) {
             transaction.rollback();
@@ -81,7 +81,7 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
                 boolean result = pattern.matcher(document.getReceiverMail()).matches();
                 if (!result) {
                     serviceLog.debug("mail don't match");
-                    return false;
+                    throw new IllegalArgumentException("mail is incorrect");
                 }
             }
             serviceLog.info("document is correct");

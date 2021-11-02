@@ -39,23 +39,12 @@
         <label for="edit"><fmt:message key="edit"/></label><br>
         <input type="radio" id="delete" name="action" value="true">
         <label for="delete"><fmt:message key="delete"/></label><br>
-        <input type="submit">
+        <button class="btn" type="submit"><fmt:message key="send"/></button>
     </form>
 
     <c:url value="/student/create/form.html" var="create"/>
     <a href="${create}" class="btn"><fmt:message key="create"/></a>
 
-    <c:if test="${not empty incorrectData}">
-        <div class="container mt-3">
-        <div class="toast show">
-            <div class="toast-header">
-                <strong class="me-auto">Toast Header</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">
-                <p class="text-danger"><fmt:message key="incorrectData"/></p>
-            </div>
-        </div>
-    </c:if>
+    <tag:warning/>
 
 </tag:html>

@@ -22,6 +22,7 @@ public class CreateStudent implements DeanCommand {
 
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        controllerLog.info("creating student");
         request.getSession(false).removeAttribute("incorrectData");
         String name = request.getParameter("name");
         String lastname = request.getParameter("lastname");
@@ -32,11 +33,13 @@ public class CreateStudent implements DeanCommand {
         String login = request.getParameter("login");
 
         try {
+            controllerLog.info("in try catch");
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
             Student student = new Student(name, lastname, patronymic, date, mail, deanId);
             User user = new User();
             user.setRole(Role.STUDENT);
             user.setLogin(login);
+            controllerLog.info("init user and stud");
             if (studentService.createStudent(student, user)) {
                 return new Result(Page.STUDENT_LIST_HTML, true);
             } else {
@@ -47,6 +50,10 @@ public class CreateStudent implements DeanCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             return new Result(Page.ERROR, false);
+        } catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            return new Result(Page.STUDENT_CREATE_FORM, true);
         }
     }
 }

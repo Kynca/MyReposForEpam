@@ -26,7 +26,6 @@ public class FindDean implements AdminCommand {
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
-        request.getSession(false).removeAttribute("incorrectData");
         try {
             Integer id = (Integer) request.getSession(false).getAttribute("id");
             DeanService deanService = ServiceFactory.getInstance().getDeanService();

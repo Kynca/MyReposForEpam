@@ -15,6 +15,6 @@ public class LogOut implements Command {
         Locale locale = (Locale) request.getSession(false).getAttribute("locale");
         request.getSession().invalidate();
         request.getSession().setAttribute("locale", locale);
-        return new Result(Page.LOGIN_FORM, true);
+        return new Result(Page.INDEX_HTML, true);
     }
 }

@@ -51,7 +51,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             User user = userDao.findById(id);
             if (user == null || user.getRole() == Role.ADMINISTRATOR) {
                 serviceLog.info(" user is null or administrator");
-                return false;
+                throw new IllegalArgumentException("impossible to delete this user");
             }
             List<Document> documents = documentDao.findByUserId(id);
             if (documents.size() > 0) {
@@ -109,8 +109,21 @@ public class UserServiceImpl extends BaseService implements UserService {
         if (user != null && user.getId() != null && user.getRole() != null && user.getRole() != Role.ADMINISTRATOR && user.getLogin() != null) {
             UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
             transaction.init(userDao);
+
             try {
-                if (userDao.findById(user.getId()) == user) {
+                User user1 = userDao.findById(user.getId());
+
+                if(user1.getRole() == Role.ADMINISTRATOR){
+                    return  true;
+                }
+
+                user1 = userDao.findByLogin(user.getLogin());
+
+                if(user1 != null && !user1.getId().equals(user.getId())){
+                    throw new IllegalArgumentException("user with this login already exist");
+                }
+
+                if (user1 == user) {
                     serviceLog.info("same user for update in db");
                     return true;
                 }
@@ -123,7 +136,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             }
         } else {
             serviceLog.info("incorrect user");
-            return false;
+            throw new IllegalArgumentException("not all fields is filled");
         }
     }
 }

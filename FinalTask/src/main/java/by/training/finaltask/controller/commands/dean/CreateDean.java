@@ -36,7 +36,6 @@ public class CreateDean implements AdminCommand {
             } else {
                 controllerLog.info("dean was not created");
                 result = new Result(Page.DEAN_FIND_UNIVERSITY, true);
-                request.getSession(false).setAttribute("incorrectData", "incorrectData");
             }
         } catch (ServiceException e) {
             controllerLog.error(e + e.getMessage());
@@ -44,7 +43,11 @@ public class CreateDean implements AdminCommand {
             result = new Result(Page.ERROR, false);
         } catch (NumberFormatException e) {
             result = new Result(Page.DEAN_FIND_UNIVERSITY, true);
-            request.getSession(false).setAttribute("incorrectData", "incorrectData");
+            request.getSession(false).setAttribute("incorrectData", "you should put numbers on field phone num");
+        } catch (IllegalArgumentException e) {
+            controllerLog.error(e + e.getMessage());
+            result = new Result(Page.DEAN_FIND_UNIVERSITY, true);
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
         }
         return result;
     }

@@ -38,21 +38,8 @@
         <label for="edit"><fmt:message key="edit"/></label><br>
         <input type="radio" id="delete" name="action" value="true">
         <label for="delete"><fmt:message key="delete"/></label><br>
-        <button type="submit"><fmt:message key="send"/></button>
+        <button class="btn" type="submit"><fmt:message key="send"/></button>
     </form>
-
-    <c:if test="${not empty incorrectData}">
-        <div class="container mt-3">
-        <div class="toast show">
-            <div class="toast-header">
-                <strong class="me-auto">Toast Header</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">
-                <p class="text-danger"><fmt:message key="incorrectData"/></p>
-            </div>
-        </div>
-    </c:if>
 
     <c:url value="/dean/find/uni.html" var="findUni"/>
     <a href="${findUni}" class="btn"><fmt:message key="create"/></a>

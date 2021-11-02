@@ -171,14 +171,24 @@ public class StudentDaoImpl extends BaseDao implements StudentDao {
     }
 
     @Override
-    public boolean isUniqueMail(String mail) throws ServiceException {
+    public boolean isUniqueMail(String mail,Integer id) throws ServiceException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try{
             statement = connection.prepareStatement(IS_UNIQUE_MAIL);
             statement.setString(1, mail);
             resultSet = statement.executeQuery();
-            return !resultSet.next();
+            if(resultSet.next()){
+                if(id == null || id.equals(resultSet.getInt("user_id"))){
+                    return true;
+                }else {
+                    return false;
+                }
+
+
+            }else {
+                return true;
+            }
         } catch (SQLException throwables) {
             throw new ServiceException(throwables);
         }finally {

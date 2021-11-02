@@ -26,7 +26,7 @@
                     <c:url var="action" value="/document/edit.html"/>
                         <th><form method="post" action="${action}">
                             <input name="path" type="file" required>
-                            <button type="submit" name="id" value="${item.id}"><fmt:message key="edit"/> </button>
+                            <button class="btn" type="submit" name="id" value="${item.id}"><fmt:message key="edit"/> </button>
                         </form>
                         </th>
                     </tr>

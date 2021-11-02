@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface StudentDao extends Dao<Integer, Student> {
     List<Student> findDeanStudent(Integer deanId) throws DaoException;
-    boolean isUniqueMail(String mail) throws ServiceException;
+    boolean isUniqueMail(String mail, Integer id) throws ServiceException;
 }

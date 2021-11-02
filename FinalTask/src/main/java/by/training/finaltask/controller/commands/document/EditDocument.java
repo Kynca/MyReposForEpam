@@ -30,6 +30,10 @@ public class EditDocument implements DeanCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             return new Result(Page.ERROR, false);
+        } catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            return new Result(Page.DOCUMENT_DEAN_LIST_HTML, true);
         }
     }
 }

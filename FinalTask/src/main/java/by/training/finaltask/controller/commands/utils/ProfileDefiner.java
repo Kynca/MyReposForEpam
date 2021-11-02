@@ -18,6 +18,7 @@ public class ProfileDefiner implements AdminCommand, StudentCommand, DeanCommand
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
+        request.getSession(false).removeAttribute("incorrectData");
         User user = (User) request.getSession().getAttribute("authorizedUser");
         switch (user.getRole()) {
             case STUDENT, DEAN:

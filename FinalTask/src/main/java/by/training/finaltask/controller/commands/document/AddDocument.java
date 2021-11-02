@@ -53,6 +53,11 @@ public class AddDocument implements StudentCommand {
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
         }
+        catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            result = new Result(Page.DOCUMENT_ORDER_HTML, true);
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+        }
         return result;
     }
 }

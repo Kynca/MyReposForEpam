@@ -28,6 +28,7 @@ public class EditStudent implements AdminCommand, DeanCommand {
         request.getSession(false).removeAttribute("incorrectData");
         Result result;
         User user = (User) request.getSession(false).getAttribute("authorizedUser");
+        Integer id = Integer.valueOf(request.getParameter("id"));
         boolean isDean;
         try {
             StudentService studentService = ServiceFactory.getInstance().getStudentService();
@@ -44,7 +45,6 @@ public class EditStudent implements AdminCommand, DeanCommand {
                 dean_id = Integer.valueOf(request.getParameter("deanId"));
                 isDean = false;
             }
-            Integer id = Integer.valueOf(request.getParameter("id"));
             Student student = new Student(id, name, lastname, patronymic, date, mail, dean_id);
 
             if (studentService.updateInfo(student, isDean)) {
@@ -60,6 +60,11 @@ public class EditStudent implements AdminCommand, DeanCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
+        } catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            request.setAttribute("id", id);
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            result = new Result(Page.STUDENT_FIND, true);
         }
         return result;
     }

@@ -37,7 +37,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             serviceLog.info("user founded = " + user + " \nstudent = " + student);
             if (user == null) {
                 serviceLog.info("user not founded");
-                return null;
+                throw new IllegalArgumentException("user not found");
             }
             if (user.getRole() == Role.STUDENT || user.getRole() == Role.DEAN) {
                 serviceLog.info("role student or Dean");
@@ -130,16 +130,17 @@ public class StudentServiceImpl extends BaseService implements StudentService {
 
     @Override
     public boolean createStudent(Student student, User user) throws ServiceException {
+        serviceLog.info("in create student");
         if (student != null) {
             StudentDaoImpl studentDao = DaoFactory.getInstance().getStudentDao();
             UserDaoImpl userDao = DaoFactory.getInstance().getUserDao();
             transaction.init(studentDao, userDao);
             try {
                 if (studentCheck(student, studentDao)) {
-
+                    serviceLog.info("passed student check");
                     if (userDao.findByLogin(user.getLogin()) != null) {
                         transaction.rollback();
-                        return false;
+                        throw new IllegalArgumentException("login is not unique");
                     }
 
                     Integer id = userDao.createUser(user);
@@ -147,7 +148,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
 
                     if (id == null) {
                         transaction.rollback();
-                        return false;
+                        throw new IllegalArgumentException("user not created");
                     }
                     if (studentDao.create(student)) {
                         return true;
@@ -177,28 +178,29 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             try {
                 User user = userDao.findById(id);
                 if (user == null || user.getRole() == Role.ADMINISTRATOR) {
-                    return false;
+                    throw new IllegalArgumentException("deleting student is admin");
                 }
 
                 Student student = studentDao.findById(id);
 
+                if (student == null) {
+                    throw new IllegalArgumentException("student with id " + id + " not founded");
+                }
+
                 if (deanId != null) {
                     if (!deanId.equals(student.getDeanId())) {
-                        return false;
+                        throw new IllegalArgumentException("student is not included in this dean  ");
                     }
                 }
 
-                if (student != null) {
-                    List<Document> documents = documentDao.findByUserId(id);
-                    if (documents.size() > 0) {
-                        if (!documentDao.deleteUserReferences(id)) {
-                            return false;
-                        }
+                List<Document> documents = documentDao.findByUserId(id);
+                if (documents.size() > 0) {
+                    if (!documentDao.deleteUserReferences(id)) {
+                        return false;
                     }
-                    return studentDao.delete(id);
-                } else {
-                    return false;
                 }
+                return studentDao.delete(id);
+
             } catch (DaoException e) {
                 transaction.rollback();
                 throw new ServiceException(e);
@@ -210,33 +212,35 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     }
 
     private boolean studentCheck(Student student, StudentDao studentDao) throws ServiceException {
+        serviceLog.info("in studentCheck");
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:.[a-zA-Z0-9_+&*-]" +
                 "+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}");
         boolean result = pattern.matcher(student.getMail()).matches();
         if (!result) {
             serviceLog.info("mail dont match" + student.getMail());
-            return false;
+            throw new IllegalArgumentException("incorrect mail");
         }
 
         if (student.getName() == null || student.getDeanId() == null || student.getDate() == null ||
                 student.getLastname() == null || student.getPatronymic() == null) {
             serviceLog.info("something is null");
-            return false;
+            throw new IllegalArgumentException("some of fields is null");
         }
 
         if (student.getName().length() > 15 || student.getPatronymic().length() > 20 || student.getLastname().length() > 25) {
-            return false;
+            throw new IllegalArgumentException("name, patronymic or lastname is too long");
         }
 
         pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
         if (!pattern.matcher(student.getDate()).matches()) {
             serviceLog.info("data dont match");
-            return false;
+            throw new IllegalArgumentException("incorrect data");
         }
 
-        if (studentDao.isUniqueMail(student.getMail())) {
+        if (studentDao.isUniqueMail(student.getMail(), student.getId())) {
             return true;
+        } else {
+            throw new IllegalArgumentException("mail is not unique");
         }
-        return false;
     }
 }

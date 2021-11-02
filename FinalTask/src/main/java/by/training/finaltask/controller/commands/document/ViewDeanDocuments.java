@@ -23,7 +23,7 @@ public class ViewDeanDocuments implements DeanCommand {
     @Override
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
-            request.getSession(false).removeAttribute("incorrectData");
+//            request.getSession(false).removeAttribute("incorrectData");
             Integer deanId = (Integer) request.getSession(false).getAttribute("deanId");
             DocumentService documentService = ServiceFactory.getInstance().getDocumentService();
             List<Document> documents = documentService.viewDocuments(deanId, true);

@@ -1,6 +1,5 @@
 package by.training.finaltask.view;
 
-
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -8,7 +7,7 @@ import javax.servlet.http.HttpSessionListener;
 import java.util.Locale;
 
 @WebListener
-class HttpSessionListenerImpl implements HttpSessionListener {
+public class SessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {

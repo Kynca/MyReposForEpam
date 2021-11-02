@@ -7,7 +7,7 @@
 <tag:html title="Student documents">
     <tag:menu/>
     <div class="inner">
-        <table>
+        <table class="table">
             <c:if test="${not empty documents}">
                 <c:forEach items="${documents}" var="item">
                     <c:choose>
@@ -28,7 +28,7 @@
         </table>
 
         <c:url value="/document/order.html" var="link"/>
-        <a href="${link}"> <fmt:message key="orderDoc"/> </a>
+        <a class="btn" href="${link}"> <fmt:message key="orderDoc"/> </a>
     </div>
 
 </tag:html>

@@ -24,8 +24,9 @@ public class ProcessUser implements AdminCommand {
     public Result execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Result result;
         request.getSession(false).removeAttribute("incorrectData");
+        Integer id = null;
         try {
-            Integer id = Integer.valueOf(request.getParameter("id"));
+            id = Integer.valueOf(request.getParameter("id"));
             Boolean choice = Boolean.valueOf(request.getParameter("action"));
             controllerLog.info("init" + id + " " + choice);
             if (choice) {
@@ -50,6 +51,10 @@ public class ProcessUser implements AdminCommand {
             controllerLog.error("get exception" + e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
+        } catch (IllegalArgumentException e){
+            controllerLog.error("get exception" + e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            result = new Result(Page.USER_LIST_HTML, true);
         }
         return result;
     }

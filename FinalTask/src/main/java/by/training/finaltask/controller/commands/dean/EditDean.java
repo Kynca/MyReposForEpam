@@ -45,9 +45,13 @@ public class EditDean implements AdminCommand {
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
         } catch (NumberFormatException e) {
-            controllerLog.debug(e + e.getMessage());
-            request.getSession(false).setAttribute("incorrectData", "incorrectData");
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", "you should put phone numbers in field phone num");
             result = new Result(Page.DEAN_FIND, true);
+        }catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            result = new Result(Page.DEAN_FIND, true);
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
         }
         return result;
     }

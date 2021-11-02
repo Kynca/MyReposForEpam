@@ -36,19 +36,9 @@
                     <input id="dean" type="text" name="deanId" required value="${sessionScope.deanId}">
                 </div>
                 <div class="form-group">
-                    <button type="submit"><fmt:message key="create"/></button>
+                    <button class="btn" type="submit"><fmt:message key="create"/></button>
                 </div>
             </form>
-    <c:if test="${not empty incorrectData}">
-        <div class="container mt-3">
-        <div class="toast show">
-            <div class="toast-header">
-                <strong class="me-auto">Toast Header</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">
-                <p class="text-danger"><fmt:message key="incorrectData"/></p>
-            </div>
-        </div>
-    </c:if>
+   <tag:warning/>
+
 </tag:html>

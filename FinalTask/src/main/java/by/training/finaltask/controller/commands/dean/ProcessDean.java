@@ -48,6 +48,10 @@ public class ProcessDean implements AdminCommand {
             controllerLog.error(e + e.getMessage());
             request.getSession(false).setAttribute("error", e.getMessage());
             result = new Result(Page.ERROR, false);
+        }catch (IllegalArgumentException e){
+            controllerLog.error(e + e.getMessage());
+            request.getSession(false).setAttribute("incorrectData", e.getMessage());
+            result = new Result(Page.DEAN_LIST_HTML, true);
         }
         return result;
     }

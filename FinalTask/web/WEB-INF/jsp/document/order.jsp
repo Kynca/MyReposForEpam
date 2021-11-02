@@ -19,12 +19,16 @@
                 </label><br>
             </div>
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="radio2" name="deliveryType" value="false" checked>
-                <label class="form-check-label" for="radio2">Электронно</label>
+                <label class="form-check-label">
+                    <fmt:message key="on_email"/>
+                    <input type="radio" class="form-check-input" name="deliveryType" value="false" checked>
+                </label>
             </div>
             <div class="form-check">
-                <input type="radio" class="form-check-input" id="radio1" name="deliveryType" value="true" checked>
-                <label class="form-check-label" for="radio1">Самовывоз</label>
+                <label class="form-check-label">
+                    <fmt:message key="pickup"/>
+                <input type="radio" class="form-check-input" name="deliveryType" value="true" checked>
+               </label>
             </div>
             <div class="form-group">
                 <label for="receiverName"><fmt:message key="receiverName"/></label><br>
@@ -44,21 +48,10 @@
                        name="comment">
             </div>
             <div class="form-group">
-                <button type="submit"><fmt:message key="authorise"/></button>
+                <button class="btn" type="submit"><fmt:message key="authorise"/></button>
             </div>
             </form>
-            <c:if test="${not empty incorrectData}">
-                <div class="container mt-3">
-                <div class="toast show">
-                    <div class="toast-header">
-                        <strong class="me-auto">Toast Header</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                    </div>
-                    <div class="toast-body">
-                        <p class="text-danger"><fmt:message key="incorrectData"/></p>
-                    </div>
-                </div>
-            </c:if>
+            <tag:warning/>
         </c:when>
         <c:otherwise>
             <h1>Something goes wrong try again later</h1>

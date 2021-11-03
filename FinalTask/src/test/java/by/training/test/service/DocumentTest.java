@@ -16,7 +16,7 @@ public class DocumentTest {
 
     @BeforeSuite
     public void initConnection() throws DaoException {
-        connectionPool.init("src/test/resources/database.properties");
+        connectionPool.init("database.properties");
     }
 
     @BeforeTest
@@ -59,8 +59,6 @@ public class DocumentTest {
     return new Object[][]{
             {new Document(1, false, null, null, null, 2), true},
             {new Document(1, true, null, null, null, 2), true},
-            {new Document(1, true, "sad", "sda", null, 2), false},
-            {new Document(65, true, "sad", "sda", null, 2), false},
     };
 }
 
@@ -69,19 +67,42 @@ public class DocumentTest {
         assertEquals(documentService.createDocument(document), result);
     }
 
-    @DataProvider(name = "updateData")
+    @DataProvider(name = "incorrectCreateData")
+    public Object[][] incorrectCreateData() {
+        return new Object[][]{
+                {new Document(1, true, "sad", "sda", null, 2), false},
+                {new Document(65, true, "sad", "sda", null, 2), false},
+        };
+    }
+
+    @Test(description = "creating document", dataProvider = "incorrectCreateData", expectedExceptions = {IllegalArgumentException.class})
+    public void failedFindDocTest(Document document, boolean result) throws ServiceException {
+        assertEquals(documentService.createDocument(document), result);
+    }
+
+    @DataProvider(name = "correctUpdateData")
     public Object[][] updateData(){
         return new Object[][]{
                 {2, "/filepath", true},
+
+        };
+    }
+
+    @Test(description = "updating path", dataProvider = "correctUpdateData")
+    public void updateDoc(Integer id, String path, boolean result) throws ServiceException {
+        assertEquals(documentService.addFile(path, id), result);
+    }
+
+    @DataProvider(name = "incorrectUpdateData")
+    public Object[][] incorrectUpdateData(){
+        return new Object[][]{
                 {1, "/filepath", false},
                 {null, "/filepath", false},
         };
     }
 
-    @Test(description = "updating path", dataProvider = "updateData")
-    public void updateDoc(Integer id, String path, boolean result) throws ServiceException {
+    @Test(description = "updating path", dataProvider = "incorrectUpdateData", expectedExceptions = {IllegalArgumentException.class})
+    public void failedUpdateDoc(Integer id, String path, boolean result) throws ServiceException {
         assertEquals(documentService.addFile(path, id), result);
     }
-
-
 }

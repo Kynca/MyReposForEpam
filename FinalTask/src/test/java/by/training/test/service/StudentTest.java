@@ -1,7 +1,6 @@
 package by.training.test.service;
 
 import by.training.finaltask.bean.entities.Student;
-import by.training.finaltask.bean.entities.User;
 import by.training.finaltask.dao.connectionpool.ConnectionPool;
 import by.training.finaltask.dao.exception.DaoException;
 import by.training.finaltask.service.ServiceFactory;
@@ -19,7 +18,7 @@ public class StudentTest {
 
     @BeforeSuite
     public void initConnection() throws DaoException {
-        connectionPool.init("src/test/resources/database.properties");
+        connectionPool.init("database.properties");
     }
 
     @BeforeTest
@@ -61,7 +60,7 @@ public class StudentTest {
                 {1, null},
                 {2, new Student(2,"Matwey", "Gricenko", "Vladimirovich", "2002-03-29",
                         "matwey@mail.ru", 1)},
-                {8, null},
+                {38, null},
                 {null, null}
         };
     }
@@ -71,11 +70,22 @@ public class StudentTest {
         assertEquals(studentService.viewInfo(id, false), result);
     }
 
-    @DataProvider(name = "update info data")
-    public Object[][] updateData(){
+    @DataProvider(name = "correctUpdateData")
+    public Object[][] correctUpdateData(){
         return new Object[][]{
                 {new Student(1,"sad","das","sda","2000-11-11","mail132@mail.ru",4), false},
                 {new Student(2,"Matwey","das","sda","2000-11-11","myMail@gmail.com",4), true},
+        };
+    }
+
+    @Test(description = "test update student", dataProvider = "correctUpdateData")
+    public void updateStudentTest(Student student, boolean result) throws ServiceException {
+        assertEquals(studentService.updateInfo(student, false), result);
+    }
+
+    @DataProvider(name = "incorrectUpdateData")
+    public Object[][] updateData(){
+        return new Object[][]{
                 {new Student(null,"Matwey","das","sda","2000-11-11"," mail132@mail",4), false},
                 {new Student(2,null,"das","sda","2000-11-11"," mail132@mail",4), false},
                 {new Student(2,"asd",null,"sda","2000-11-11"," mail132@mail",4), false},
@@ -88,8 +98,8 @@ public class StudentTest {
         };
     }
 
-    @Test(description = "test update student", dataProvider = "update info data")
-    public void updateStudentTest(Student student, boolean result) throws ServiceException {
+    @Test(description = "test update student", dataProvider = "incorrectUpdateData", expectedExceptions = {IllegalArgumentException.class})
+    public void failedUpdateStudentTest(Student student, boolean result) throws ServiceException {
         assertEquals(studentService.updateInfo(student, false), result);
     }
 

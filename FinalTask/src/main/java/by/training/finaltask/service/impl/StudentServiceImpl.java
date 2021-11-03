@@ -37,7 +37,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             serviceLog.info("user founded = " + user + " \nstudent = " + student);
             if (user == null) {
                 serviceLog.info("user not founded");
-                throw new IllegalArgumentException("user not found");
+                return null;
             }
             if (user.getRole() == Role.STUDENT || user.getRole() == Role.DEAN) {
                 serviceLog.info("role student or Dean");

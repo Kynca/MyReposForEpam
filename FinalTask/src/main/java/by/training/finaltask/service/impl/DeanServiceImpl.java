@@ -53,7 +53,7 @@ public class DeanServiceImpl extends BaseService implements DeanService {
         DeanDaoImpl deanDao = DaoFactory.getInstance().getDeanDao();
         UniversityDao universityDao = DaoFactory.getInstance().getUniversityDao();
         transaction.init(deanDao);
-        if (dean != null && check(dean, universityDao)) {
+        if (dean != null && check(dean, universityDao) && dean.getId() != null) {
             serviceLog.info("dean checked");
             try {
                 return deanDao.update(dean);
@@ -165,7 +165,7 @@ public class DeanServiceImpl extends BaseService implements DeanService {
 
         serviceLog.debug(id + " " + length + " " + address, " " + universityId);
 
-        if (address == null || dean.getFaculty() == null || id == null) {
+        if (address == null || dean.getFaculty() == null) {
             throw new IllegalArgumentException("incorrect data");
         }
         if(!(length >= 10 && length <= 13)){

@@ -27,7 +27,7 @@ public class DocumentServiceImpl extends BaseService implements DocumentService 
         transaction.init(documentDao);
         List<Document> documents = new ArrayList<>();
         try {
-            if (id != null || id > 0) {
+            if (id != null && id > 0) {
                 serviceLog.info("correct id");
                 if (isDean) {
                     documents = documentDao.findByDeanId(id);

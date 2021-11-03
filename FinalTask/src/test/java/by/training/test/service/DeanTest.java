@@ -16,7 +16,7 @@ public class DeanTest {
 
     @BeforeSuite
     public void initConnection() throws DaoException {
-        connectionPool.init("src/test/resources/database.properties");
+        connectionPool.init("database.properties");
     }
 
     @BeforeTest
@@ -40,23 +40,45 @@ public class DeanTest {
     }
 
     @DataProvider(name = "dataForFindDean")
-    public Object[][] dataForFindDean() {
+    public Object[][] correctDataForFindDean() {
         return new Object[][]{
                 {1, new Dean(1, "IEF", "Centralnaya10-214", 375292223001L, 4)},
                 {2, new Dean(2, "EF", "Platnov37-131", 375773600222L, 1)},
-                {null, null}
         };
     }
 
-    @Test(description = "find id test", dataProvider = "dataForFindDean")
+    @Test(description = "find id test", dataProvider = "correctDataForFindDean")
     public void findDeanById(Integer id, Dean result) throws ServiceException {
         assertEquals(deanService.findDean(id), result);
     }
 
-    @DataProvider(name = "create data")
+    @DataProvider(name = "incorrectDataForFindDean")
+    public Object[][] incorrectDataForFindDean() {
+        return new Object[][]{
+                {null, null}
+        };
+    }
+
+    @Test(description = "find id test", dataProvider = "incorrectDataForFindDean", expectedExceptions = {IllegalArgumentException.class})
+    public void failedFindDeanById(Integer id, Dean result) throws ServiceException {
+        assertEquals(deanService.findDean(id), result);
+    }
+
+    @DataProvider(name = "correct create data")
     public Object[][] createData() {
         return new Object[][]{
-                {new Dean("address1","Faculty" , 375773600222L, 2), true},
+                {new Dean("address1","Faculty" , 375773100222L, 2), true},
+        };
+    }
+
+    @Test(description = "create dean test", dataProvider = "correct create data")
+    public void createTest(Dean dean, boolean result) throws ServiceException {
+        assertEquals(deanService.create(dean), result);
+    }
+
+    @DataProvider(name = "incorrect create data")
+    public Object[][] incorrectCreateData() {
+        return new Object[][]{
                 {new Dean("address2","Faculty" , 375L, 2), false},
                 {new Dean("address4", "Faculty", 3211214414L, 1), false},
                 {new Dean(null, "address5", 37521312311L, 2), false},
@@ -64,8 +86,8 @@ public class DeanTest {
         };
     }
 
-    @Test(description = "create dean test", dataProvider = "create data")
-    public void createTest(Dean dean, boolean result) throws ServiceException {
+    @Test(description = "create dean test", dataProvider = "incorrect create data", expectedExceptions = {IllegalArgumentException.class})
+    public void failedCreateTest(Dean dean, boolean result) throws ServiceException {
         assertEquals(deanService.create(dean), result);
     }
 
@@ -92,9 +114,6 @@ public class DeanTest {
     public Object[][] deleteDeanData(){
         return new Object[][]{
                 {1, true},
-                {1, false},
-                {null, false},
-                {312, false}
         };
     }
 
@@ -103,4 +122,16 @@ public class DeanTest {
         assertEquals(deanService.deleteDean(id), result);
     }
 
+    @DataProvider(name = "incorrectDeleteDeanData")
+    public Object[][] incorrectDeleteDeanData(){
+        return new Object[][]{
+                {null, false},
+                {312, false}
+        };
+    }
+
+    @Test(description = "delete test", dataProvider = "incorrectDeleteDeanData", expectedExceptions = {IllegalArgumentException.class})
+    public void failedDeleteTest(Integer id, boolean result) throws ServiceException {
+        assertEquals(deanService.deleteDean(id), result);
+    }
 }

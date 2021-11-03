@@ -27,7 +27,7 @@ public class MarkServiceImpl extends BaseService implements MarkService {
                 return markDao.findByStudentId(id);
             }
             serviceLog.info("incorrect id");
-            return new ArrayList<Mark>();
+            return new ArrayList<>();
         } catch (DaoException e) {
             throw new ServiceException(e);
         }finally {
@@ -54,7 +54,6 @@ public class MarkServiceImpl extends BaseService implements MarkService {
         }
     }
 
-    //TODO invoke
     @Override
     public boolean createMark(Mark mark) throws ServiceException {
         try {

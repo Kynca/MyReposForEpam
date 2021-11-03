@@ -19,7 +19,7 @@ public class UserTest {
 
     @BeforeSuite
     public void initConnection() throws DaoException {
-        connectionPool.init("src/test/resources/database.properties");
+        connectionPool.init("database.properties");
     }
 
     @BeforeTest
@@ -76,11 +76,24 @@ public class UserTest {
     @DataProvider(name = "data for update")
     public Object[][] updateData(){
         return new Object[][]{
-                {new User(1,"user31",Role.ADMINISTRATOR), new User(1,"user1", Role.ADMINISTRATOR)},
                 {new User(2,"user2",Role.STUDENT),new User(2,"user2",Role.STUDENT)},
+                {new User(2,"logisadas",Role.STUDENT), new User(2,"logisadas",Role.STUDENT)}
+        };
+    }
+
+    @Test(description = "update user test success", dataProvider ="data for update" )
+    public void goodUpdateUserTest(User user, User result) throws ServiceException {
+        userService.updateUser(user);
+        userService = ServiceFactory.getInstance().getUserService();
+        User user1 = userService.findUser(user.getId());
+        assertEquals(user1, result);
+    }
+
+    @DataProvider(name = "incorrect data for update")
+    public Object[][] updateIncorrectData(){
+        return new Object[][]{
+                {new User(1,"user31",Role.ADMINISTRATOR), new User(1,"user1", Role.ADMINISTRATOR)},
                 {new User(2,"user3",Role.STUDENT), new User(2,"user2",Role.STUDENT)},
-                {new User(2,"logisadas",Role.STUDENT), new User(2,"logisadas",Role.STUDENT)},
-                {new User(2,"logisadas",Role.DEAN), new User(2,"logisadas",Role.DEAN)},
                 {new User(2,"logisadas",Role.ADMINISTRATOR), new User(2,"logisadas",Role.DEAN)},
                 {new User(null,null, null), null},
                 {new User(3,null, null), new User(3, "user3", Role.STUDENT)},
@@ -89,8 +102,8 @@ public class UserTest {
         };
     }
 
-    @Test(description = "update user test", dataProvider ="data for update" )
-    public void updateUserTest(User user, User result) throws ServiceException {
+    @Test(description = "update user test exception", dataProvider ="incorrect data for update", expectedExceptions = {IllegalArgumentException.class})
+    public void failedUpdateUserTest(User user, User result) throws ServiceException {
         userService.updateUser(user);
         userService = ServiceFactory.getInstance().getUserService();
         User user1 = userService.findUser(user.getId());
@@ -100,7 +113,6 @@ public class UserTest {
     @DataProvider(name = "delete data")
     public Object[][] deleteData(){
         return new Object[][]{
-                {1, new User(1,"user1", Role.ADMINISTRATOR)},
                 {2, null},
                 {4, null},
                 {8, null},

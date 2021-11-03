@@ -27,7 +27,6 @@ public class DispatcherServlet extends HttpServlet {
         try {
             ConnectionPool.getInstance().init("database.properties");
         } catch (Exception e) {
-            //logger
             destroy();
         }
     }

@@ -21,7 +21,7 @@ public class MarkTest {
     @BeforeTest()
     public void init() {
         try {
-            connectionPool.init("src/test/resources/database.properties");
+            connectionPool.init("database.properties");
             markService = ServiceFactory.getInstance().getMarkService();
         } catch (DaoException | ServiceException e) {
             e.printStackTrace();
@@ -41,6 +41,10 @@ public class MarkTest {
     public void selectTest(int id, int result) throws ServiceException {
         List<Mark> markList = markService.viewMarks(id);
         assertEquals(markList.size(), result);
+    }
 
+    @AfterMethod
+    public void afterMethod() throws ServiceException {
+        markService = ServiceFactory.getInstance().getMarkService();
     }
 }

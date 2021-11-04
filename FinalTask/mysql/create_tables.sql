@@ -6,9 +6,9 @@ CREATE TABLE program_user
     login    VARCHAR(40) NOT NULL UNIQUE,
     password NCHAR(32)   NOT NULL,
     /*
-     * 0 - человек с большими правами
-     * 1 - клиент
-     * 2 - гость
+     * 0 - admin
+     * 1 - student
+     * 2 - dean
      */
     role     TINYINT     NOT NULL CHECK (role IN (0, 1, 2)),
     PRIMARY KEY (id)

@@ -50,6 +50,6 @@ public class Index implements Command {
     public void setLocale(HttpServletRequest request, String language) {
         String[] params = language.split("_");
         Locale locale = new Locale(params[0], params[1]);
-        request.getSession(false).setAttribute("locale", locale);
+        request.getSession().setAttribute("locale", locale);
     }
 }

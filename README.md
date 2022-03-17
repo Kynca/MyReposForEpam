@@ -1,2 +1,2 @@
-# MyReposForEpam
-My rep for epam
+# My personal repository
+Uses for educational aims

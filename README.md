@@ -1,2 +1,2 @@
 # My personal repository
-Uses for educational aims
+Used for educational aims
